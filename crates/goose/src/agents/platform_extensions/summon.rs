@@ -1528,21 +1528,15 @@ impl SummonClient {
         recipe: &Recipe,
         session: &crate::session::Session,
     ) -> Result<TaskConfig, anyhow::Error> {
-        let mut extensions = EnabledExtensionsState::extensions_or_default(
-            Some(&session.extension_data),
-            Config::global(),
-        );
-
-        // Merge recipe-declared extensions that the parent session does not have,
-        // resolving them before provider creation so that CLI providers (codex,
-        // claude-code) receive the correct MCP servers at construction time.
-        if let Some(recipe_extensions) = recipe.extensions.as_ref() {
-            for ext in recipe_extensions {
-                if !extensions.iter().any(|e| e.name() == ext.name()) {
-                    extensions.push(ext.clone());
-                }
-            }
-        }
+        // Treat recipe-declared extensions as authoritative, matching the
+        // root-session path in resolve_extensions_for_new_session.
+        let mut extensions = match recipe.extensions.as_ref() {
+            Some(recipe_extensions) => recipe_extensions.clone(),
+            None => EnabledExtensionsState::extensions_or_default(
+                Some(&session.extension_data),
+                Config::global(),
+            ),
+        };
 
         if let Some(filter) = &params.extensions {
             if filter.is_empty() {
