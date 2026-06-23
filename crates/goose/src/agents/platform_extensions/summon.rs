@@ -1,4 +1,4 @@
-use crate::agents::extension::PlatformExtensionContext;
+use crate::agents::extension::{ExtensionConfig, PlatformExtensionContext};
 use crate::agents::mcp_client::{Error, McpClientTrait};
 use crate::agents::subagent_handler::{run_subagent_task, OnMessageCallback, SubagentRunParams};
 use crate::agents::subagent_task_config::{TaskConfig, DEFAULT_SUBAGENT_MAX_TURNS};
@@ -1528,15 +1528,14 @@ impl SummonClient {
         recipe: &Recipe,
         session: &crate::session::Session,
     ) -> Result<TaskConfig, anyhow::Error> {
-        let provider = self.resolve_provider(params, recipe, session).await?;
-
         let mut extensions = EnabledExtensionsState::extensions_or_default(
             Some(&session.extension_data),
             Config::global(),
         );
 
-        // Merge recipe-declared extensions that the parent session does not have.
-        // This allows delegated subagents to declare their own tools.
+        // Merge recipe-declared extensions that the parent session does not have,
+        // resolving them before provider creation so that CLI providers (codex,
+        // claude-code) receive the correct MCP servers at construction time.
         if let Some(recipe_extensions) = recipe.extensions.as_ref() {
             for ext in recipe_extensions {
                 if !extensions.iter().any(|e| e.name() == ext.name()) {
@@ -1565,6 +1564,10 @@ impl SummonClient {
                 }
             }
         }
+
+        let provider = self
+            .resolve_provider(params, recipe, session, &extensions)
+            .await?;
 
         let max_turns = params
             .max_turns
@@ -1650,6 +1653,7 @@ impl SummonClient {
         params: &DelegateParams,
         recipe: &Recipe,
         session: &crate::session::Session,
+        extensions: &[ExtensionConfig],
     ) -> Result<Arc<dyn crate::providers::base::Provider>, anyhow::Error> {
         let provider_name = params
             .provider
@@ -1669,7 +1673,7 @@ impl SummonClient {
             .ok_or_else(|| anyhow::anyhow!("No provider configured"))?;
 
         let model_config = self.resolve_model_config(params, recipe, session, &provider_name)?;
-        providers::create(&provider_name, model_config, Vec::new()).await
+        providers::create(&provider_name, model_config, extensions.to_vec()).await
     }
 
     fn resolve_max_turns(&self, session: &crate::session::Session) -> usize {
