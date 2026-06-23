@@ -1535,6 +1535,16 @@ impl SummonClient {
             Config::global(),
         );
 
+        // Merge recipe-declared extensions that the parent session does not have.
+        // This allows delegated subagents to declare their own tools.
+        if let Some(recipe_extensions) = recipe.extensions.as_ref() {
+            for ext in recipe_extensions {
+                if !extensions.iter().any(|e| e.name() == ext.name()) {
+                    extensions.push(ext.clone());
+                }
+            }
+        }
+
         if let Some(filter) = &params.extensions {
             if filter.is_empty() {
                 extensions = Vec::new();
