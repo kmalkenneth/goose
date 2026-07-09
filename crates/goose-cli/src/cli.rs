@@ -2405,7 +2405,7 @@ mod tests {
 
         let script = String::from_utf8(buffer).expect("utf8");
         assert!(script.contains("module completions"));
-        assert!(script.contains("export extern goose"));
+        assert!(script.contains("export extern duck"));
         assert!(script.contains("export use completions *"));
     }
 
