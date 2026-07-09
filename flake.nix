@@ -16,6 +16,10 @@
         overlays = [ rust-overlay.overlays.default ];
         pkgs = import nixpkgs { inherit system overlays; };
         rust = pkgs.rust-bin.stable."1.96.1".default;
+        rustPlatform = pkgs.makeRustPlatform {
+          cargo = rust;
+          rustc = rust;
+        };
         
         # Read package metadata from Cargo.toml
         cargoToml = builtins.fromTOML (builtins.readFile ./crates/goose-cli/Cargo.toml);
@@ -37,7 +41,7 @@
           ++ pkgs.lib.optionals pkgs.stdenv.isDarwin darwinInputs;
       in
       {
-        packages.default = pkgs.rustPlatform.buildRustPackage {
+        packages.default = rustPlatform.buildRustPackage {
           pname = cargoToml.package.name;
           version = workspaceToml.workspace.package.version;
           src = self;
