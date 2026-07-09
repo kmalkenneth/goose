@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: duck-desktop-deb
-        path: ui/desktop/out/make/deb/**/*.deb
+          path: ui/desktop/out/make/deb/**/*.deb
 
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
