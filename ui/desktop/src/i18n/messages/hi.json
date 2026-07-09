@@ -3852,7 +3852,7 @@
     "defaultMessage": "पुनः प्रयास करें"
   },
   "sessionViewComponents.role.assistant": {
-    "defaultMessage": "Goose"
+    "defaultMessage": "Duck"
   },
   "sessionViewComponents.role.user": {
     "defaultMessage": "आप"

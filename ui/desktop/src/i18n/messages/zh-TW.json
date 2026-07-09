@@ -3720,7 +3720,7 @@
     "defaultMessage": "再試一次"
   },
   "sessionViewComponents.role.assistant": {
-    "defaultMessage": "Goose"
+    "defaultMessage": "Duck"
   },
   "sessionViewComponents.role.user": {
     "defaultMessage": "您"

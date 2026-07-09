@@ -1,8 +1,8 @@
 {
   "name": "goose-app",
-  "productName": "Goose",
+  "productName": "Duck",
   "version": "1.42.0",
-  "description": "Goose App",
+  "description": "Duck App",
   "engines": {
     "node": "^24.10.0",
     "pnpm": ">=10.30.0"

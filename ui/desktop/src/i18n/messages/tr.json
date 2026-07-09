@@ -3852,7 +3852,7 @@
     "defaultMessage": "Tekrar Deneyin"
   },
   "sessionViewComponents.role.assistant": {
-    "defaultMessage": "Goose"
+    "defaultMessage": "Duck"
   },
   "sessionViewComponents.role.user": {
     "defaultMessage": "sen"

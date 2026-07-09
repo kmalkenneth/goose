@@ -3852,7 +3852,7 @@
     "defaultMessage": "再試行"
   },
   "sessionViewComponents.role.assistant": {
-    "defaultMessage": "Goose"
+    "defaultMessage": "Duck"
   },
   "sessionViewComponents.role.user": {
     "defaultMessage": "あなた"
