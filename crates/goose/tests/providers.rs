@@ -12,8 +12,6 @@ use goose::providers::azure::AZURE_DEFAULT_MODEL;
 use goose::providers::base::Provider;
 #[cfg(feature = "aws-providers")]
 use goose::providers::bedrock::BEDROCK_DEFAULT_MODEL;
-use goose::providers::claude_code::CLAUDE_CODE_DEFAULT_MODEL;
-use goose::providers::codex::CODEX_DEFAULT_MODEL;
 use goose::providers::create_with_named_model;
 use goose::providers::google::GOOGLE_DEFAULT_MODEL;
 use goose::providers::litellm::LITELLM_DEFAULT_MODEL;
@@ -329,8 +327,8 @@ impl ProviderFixture {
         )
         .await?;
 
-        // Agentic CLI providers (claude-code, codex) call tools internally and
-        // return the final text result directly — no tool_request in the response.
+        // Agentic providers call tools internally and return the final text result directly —
+        // no tool_request in the response.
         let tool_req = response1
             .content
             .iter()
@@ -869,22 +867,6 @@ async fn test_litellm_provider() -> Result<()> {
 #[tokio::test]
 async fn test_xai_provider() -> Result<()> {
     ProviderTestConfig::with_llm_provider("Xai", XAI_DEFAULT_MODEL, &["XAI_API_KEY"])
-        .run()
-        .await
-}
-
-#[tokio::test]
-async fn test_claude_code_provider() -> Result<()> {
-    ProviderTestConfig::with_agentic_provider("claude-code", CLAUDE_CODE_DEFAULT_MODEL, "claude")
-        .model_switch_name("sonnet")
-        .run()
-        .await
-}
-
-#[tokio::test]
-async fn test_codex_provider() -> Result<()> {
-    ProviderTestConfig::with_agentic_provider("codex", CODEX_DEFAULT_MODEL, "codex")
-        .test_permissions(false)
         .run()
         .await
 }

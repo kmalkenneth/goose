@@ -70,11 +70,6 @@ static PROVIDER_CONFIGS: LazyLock<Vec<ProviderConfig>> = LazyLock::new(|| {
             "anthropic/claude-sonnet-4",
             Some("Key is no longer valid"),
         ),
-        ProviderConfig::simple_skip(
-            "claude-code",
-            "claude-sonnet-4-20250514",
-            Some("No keys available"),
-        ),
         ProviderConfig::simple_skip("cursor-agent", "gpt-5", Some("No keys available")),
         ProviderConfig::simple_skip(
             "databricks",

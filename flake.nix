@@ -1,5 +1,5 @@
 {
-  description = "goose - An AI agent CLI";
+  description = "duck - An AI agent CLI";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
@@ -15,7 +15,7 @@
       let
         overlays = [ rust-overlay.overlays.default ];
         pkgs = import nixpkgs { inherit system overlays; };
-        rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        rust = pkgs.rust-bin.stable."1.96.1".default;
         
         # Read package metadata from Cargo.toml
         cargoToml = builtins.fromTOML (builtins.readFile ./crates/goose-cli/Cargo.toml);
@@ -103,7 +103,7 @@
             description = workspaceToml.workspace.package.description;
             homepage = workspaceToml.workspace.package.repository;
             license = licenses.asl20;  # Maps from "Apache-2.0" in Cargo.toml
-            mainProgram = "goose";
+            mainProgram = "duck";
           };
         };
 

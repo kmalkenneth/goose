@@ -12,6 +12,10 @@ description.workspace = true
 workspace = true
 
 [[bin]]
+name = "duck"
+path = "src/main.rs"
+
+[[bin]]
 name = "goose"
 path = "src/main.rs"
 

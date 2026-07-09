@@ -68,7 +68,7 @@ impl From<ServePlatform> for GoosePlatform {
 }
 
 #[derive(Parser)]
-#[command(name = "goose", author, version, display_name = "", about, long_about = None)]
+#[command(name = "duck", author, version, display_name = "", about, long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
     command: Option<Command>,
@@ -332,7 +332,7 @@ pub struct ModelOptions {
         long = "provider",
         value_name = "PROVIDER",
         help = "Specify the LLM provider to use (e.g., 'openai', 'anthropic')",
-        long_help = "Override the GOOSE_PROVIDER environment variable for this run. Available providers include openai, anthropic, ollama, databricks, gemini-cli, claude-code, and others."
+        long_help = "Override the GOOSE_PROVIDER environment variable for this run. Available providers include openai, anthropic, ollama, databricks, gemini-cli, and others."
     )]
     pub provider: Option<String>,
 
@@ -1084,7 +1084,7 @@ enum Command {
         #[arg(value_enum)]
         shell: CompletionShell,
 
-        #[arg(long, default_value = "goose", help = "Provide a custom binary name")]
+        #[arg(long, default_value = "duck", help = "Provide a custom binary name")]
         bin_name: String,
     },
 
@@ -2385,7 +2385,7 @@ mod tests {
 
     #[test]
     fn completion_command_accepts_nushell_alias() {
-        let cli = Cli::try_parse_from(["goose", "completion", "nushell"]).expect("parse failed");
+        let cli = Cli::try_parse_from(["duck", "completion", "nushell"]).expect("parse failed");
 
         match cli.command {
             Some(Command::Completion {
@@ -2401,7 +2401,7 @@ mod tests {
         let mut cmd = Cli::command();
         let mut buffer = Vec::new();
 
-        CompletionShell::Nu.generate(&mut cmd, "goose", &mut buffer);
+        CompletionShell::Nu.generate(&mut cmd, "duck", &mut buffer);
 
         let script = String::from_utf8(buffer).expect("utf8");
         assert!(script.contains("module completions"));
@@ -2439,7 +2439,7 @@ mod tests {
 
     #[test]
     fn skills_command_accepts_list_subcommand() {
-        let cli = Cli::try_parse_from(["goose", "skills", "list"]).expect("parse failed");
+        let cli = Cli::try_parse_from(["duck", "skills", "list"]).expect("parse failed");
 
         match cli.command {
             Some(Command::Skills {
@@ -2452,7 +2452,7 @@ mod tests {
     #[test]
     fn serve_command_accepts_dangerously_unauthenticated_flag() {
         let cli = Cli::try_parse_from([
-            "goose",
+            "duck",
             "serve",
             "--dangerously-unauthenticated",
             "--allowed-origin",
@@ -2481,7 +2481,7 @@ mod tests {
     #[test]
     fn review_command_accepts_options() {
         let cli = Cli::try_parse_from([
-            "goose",
+            "duck",
             "review",
             "origin/main...HEAD",
             "--prompt",
@@ -2559,7 +2559,7 @@ mod tests {
     #[test]
     fn tui_command_accepts_trailing_args() {
         let cli =
-            Cli::try_parse_from(["goose", "tui", "--", "--theme", "dark"]).expect("parse failed");
+            Cli::try_parse_from(["duck", "tui", "--", "--theme", "dark"]).expect("parse failed");
 
         match cli.command {
             Some(Command::Tui { args }) => assert_eq!(args, vec!["--theme", "dark"]),

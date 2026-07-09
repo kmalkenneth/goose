@@ -102,7 +102,7 @@ fn acp_catalog_and_custom_provider_methods_use_core_provider_store() {
                 "setup catalog should include {provider_id}"
             );
         }
-        for provider_id in ["codex", "claude_code", "gemini_cli"] {
+        for provider_id in ["gemini_cli"] {
             assert!(
                 setup_providers
                     .iter()

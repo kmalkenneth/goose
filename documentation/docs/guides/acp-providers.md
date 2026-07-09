@@ -12,7 +12,7 @@ goose supports [Agent Client Protocol (ACP)](https://agentclientprotocol.com/) a
 ACP providers pass goose [extensions](/docs/getting-started/using-extensions) through to the agent as MCP servers, so the agent can call your extensions directly.
 
 :::tip Use Your Existing Subscriptions
-ACP providers let you use goose with your existing Claude Code or ChatGPT Plus/Pro subscriptions — no per-token API costs. They are the recommended replacement for the deprecated [CLI providers](/docs/guides/cli-providers).
+ACP providers let you use goose with your existing Claude Code or ChatGPT Plus/Pro subscriptions — no per-token API costs. They are the recommended way to connect subscription-based coding agents.
 :::
 
 :::warning Limitations
@@ -34,7 +34,7 @@ Wraps [amp-acp](https://www.npmjs.com/package/amp-acp), an ACP adapter for [Amp]
 
 ### Claude ACP
 
-Wraps [claude-agent-acp](https://github.com/agentclientprotocol/claude-agent-acp), an ACP adapter for Anthropic's Claude Code. Uses the same Claude subscription as the deprecated `claude-code` CLI provider.
+Wraps [claude-agent-acp](https://github.com/agentclientprotocol/claude-agent-acp), an ACP adapter for Anthropic's Claude Code. Uses your existing Claude subscription through Claude's ACP integration.
 
 **Requirements:**
 - Node.js and npm
@@ -43,7 +43,7 @@ Wraps [claude-agent-acp](https://github.com/agentclientprotocol/claude-agent-acp
 
 ### Codex ACP
 
-Wraps [codex-acp](https://github.com/zed-industries/codex-acp), an ACP adapter for OpenAI's Codex. Uses the same ChatGPT subscription as the deprecated `codex` CLI provider. Codex's sandbox blocks network by default; goose automatically enables network access when HTTP MCP servers are configured.
+Wraps [codex-acp](https://github.com/zed-industries/codex-acp), an ACP adapter for OpenAI's Codex. Uses your existing ChatGPT subscription through Codex's ACP integration. Codex's sandbox blocks network by default; goose automatically enables network access when HTTP MCP servers are configured.
 
 **Requirements:**
 - Node.js and npm

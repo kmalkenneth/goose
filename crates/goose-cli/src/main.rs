@@ -36,7 +36,7 @@ fn main() -> Result<()> {
     enable_windows_vt_processing();
 
     let handle = std::thread::Builder::new()
-        .name("goose-cli-main".to_string())
+        .name("duck-cli-main".to_string())
         .stack_size(8 * 1024 * 1024)
         .spawn(|| {
             let runtime = tokio::runtime::Builder::new_multi_thread()

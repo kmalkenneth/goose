@@ -153,12 +153,6 @@ function getProviders(): ProviderConfig[] {
         hasFile(path.join(os.homedir(), '.config/goose/chatgpt_codex/tokens.json')),
     },
     {
-      provider: 'claude-code',
-      models: ['default'],
-      agentic: true,
-      available: () => hasCmd('claude'),
-    },
-    {
       provider: 'cursor-agent',
       models: ['auto'],
       agentic: true,
