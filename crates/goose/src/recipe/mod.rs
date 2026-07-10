@@ -317,7 +317,60 @@ impl Recipe {
 
     pub fn from_file_path(file_path: &Path) -> Result<Self> {
         let file = read_recipe_file(file_path)?;
+
+        // Duck: support Markdown recipes with YAML frontmatter (.md)
+        if file_path.extension().is_some_and(|ext| ext == "md") {
+            return Self::from_markdown(&file.content);
+        }
+
         Self::from_content(&file.content)
+    }
+
+    /// Parse a Markdown recipe with YAML frontmatter.
+    /// The YAML between --- delimiters contains structured fields.
+    /// The Markdown body after becomes the recipe instructions.
+    pub fn from_markdown(content: &str) -> Result<Self> {
+        let content = content.trim_start();
+
+        let (frontmatter, body) = if content.starts_with("---") {
+            let after = &content[3..];
+            if let Some(end) = after.find("\n---") {
+                let yaml = &after[..end];
+                let body = after[end + 4..].trim_start_matches('\n');
+                (yaml.to_string(), body.to_string())
+            } else {
+                (after.trim().to_string(), String::new())
+            }
+        } else {
+            (String::new(), content.to_string())
+        };
+
+        let mut recipe: Recipe = if frontmatter.is_empty() {
+            serde_yaml::from_str("{}")
+                .map_err(|e| anyhow::anyhow!("{}", strip_error_location(&e.to_string())))?
+        } else {
+            match serde_yaml::from_str::<serde_yaml::Value>(&frontmatter) {
+                Ok(yaml_value) => {
+                    if let Some(nested) = yaml_value.get("recipe") {
+                        serde_yaml::from_value(nested.clone())
+                            .map_err(|e| anyhow::anyhow!("{}", strip_error_location(&e.to_string())))?
+                    } else {
+                        serde_yaml::from_str(&frontmatter)
+                            .map_err(|e| anyhow::anyhow!("{}", strip_error_location(&e.to_string())))?
+                    }
+                }
+                Err(_) => serde_yaml::from_str(&frontmatter)
+                    .map_err(|e| anyhow::anyhow!("{}", strip_error_location(&e.to_string())))?,
+            }
+        };
+
+        if !body.is_empty() {
+            recipe.instructions = Some(body);
+        }
+
+        recipe.ensure_analyze_for_developer();
+        recipe.ensure_summon_for_subrecipes();
+        Ok(recipe)
     }
 
     pub fn from_content(content: &str) -> Result<Self> {
