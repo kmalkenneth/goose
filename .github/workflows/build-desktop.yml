@@ -72,7 +72,7 @@ jobs:
         run: cd ui/desktop && npx electron-forge package
 
       - name: Make .deb
-        run: cd ui/desktop && pnpm run make -- --platform=linux --arch=x64
+        run: cd ui/desktop && npx electron-forge make --targets=@electron-forge/maker-deb --arch=x64 2>&1 || (echo '--- Trying with pnpm ---' && pnpm run make -- --targets=@electron-forge/maker-deb --arch=x64 2>&1)
 
       - name: Find .deb
         id: find-deb
