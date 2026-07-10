@@ -60,6 +60,20 @@ pub const CHATGPT_CODEX_KNOWN_MODELS: &[ChatGptCodexModelAttrs] = &[
         name: "gpt-5.4",
         reasoning_levels: &["low", "medium", "high", "xhigh"],
     },
+    // GPT-5.6 models are registered as compatibility candidates only.
+    // Terra is the only model with a confirmed effort capability.
+    ChatGptCodexModelAttrs {
+        name: "gpt-5.6-luna",
+        reasoning_levels: &[],
+    },
+    ChatGptCodexModelAttrs {
+        name: "gpt-5.6-terra",
+        reasoning_levels: &["high"],
+    },
+    ChatGptCodexModelAttrs {
+        name: "gpt-5.6-sol",
+        reasoning_levels: &[],
+    },
 ];
 
 const CHATGPT_CODEX_DOC_URL: &str = "https://openai.com/chatgpt";
@@ -235,7 +249,28 @@ fn reasoning_effort_for_config(model_config: &ModelConfig) -> Option<String> {
                 .find(|level| valid_levels.contains(level))
                 .map(|level| (*level).to_string())
         })
-        .unwrap_or_else(|| Some(get_reasoning_effort(&model_config.model_name)))
+        .unwrap_or_else(|| {
+            if is_gpt56_model(&model_config.model_name) {
+                None
+            } else {
+                Some(get_reasoning_effort(&model_config.model_name))
+            }
+        })
+}
+
+fn is_gpt56_model(model: &str) -> bool {
+    matches!(model, "gpt-5.6-luna" | "gpt-5.6-terra" | "gpt-5.6-sol")
+}
+
+fn validate_gpt56_reasoning_effort(model: &str, effort: Option<&str>) -> Result<()> {
+    if !is_gpt56_model(model) {
+        return Ok(());
+    }
+    match (model, effort) {
+        ("gpt-5.6-terra", Some("high")) => Ok(()),
+        (_, None) => Ok(()),
+        _ => Err(anyhow!("reasoning effort is not supported for model {model}")),
+    }
 }
 
 fn create_codex_request(
@@ -245,7 +280,24 @@ fn create_codex_request(
     tools: &[Tool],
 ) -> Result<Value> {
     let input_items = build_input_items(messages)?;
+    // Validate the user-selected level before normalization. For example, a
+    // Terra `low` request must not become `high` merely because `high` is the
+    // only registered capability.
+    if let Some(configured_effort) = model_config
+        .request_params
+        .as_ref()
+        .and_then(|params| params.get("thinking_effort"))
+        .and_then(Value::as_str)
+    {
+        if configured_effort != "off" {
+            validate_gpt56_reasoning_effort(
+                &model_config.model_name,
+                Some(configured_effort),
+            )?;
+        }
+    }
     let reasoning_effort = reasoning_effort_for_config(model_config);
+    validate_gpt56_reasoning_effort(&model_config.model_name, reasoning_effort.as_deref())?;
 
     let mut payload = json!({
         "model": model_config.model_name,
@@ -276,11 +328,25 @@ fn create_codex_request(
         payload_obj.insert("parallel_tool_calls".to_string(), json!(true));
     }
 
-    if let Some(reasoning_effort) = reasoning_effort {
+    if let Some(ref reasoning_effort) = reasoning_effort {
         payload_obj.insert(
             "reasoning".to_string(),
             json!({ "effort": reasoning_effort }),
         );
+    }
+
+    // GPT-5.6-only compatibility policy. These fields are protocol candidates,
+    // not an entitlement claim, and must never alter legacy model payloads.
+    // We intentionally omit prompt_cache_key: Duck's session/request context
+    // does not expose a stable non-secret identifier we can safely derive.
+    if is_gpt56_model(&model_config.model_name) {
+        payload_obj.insert("stream".to_string(), json!(true));
+        payload_obj.insert("text".to_string(), json!({ "verbosity": "low" }));
+        payload_obj.insert("include".to_string(), json!(["reasoning.encrypted_content"]));
+        payload_obj.insert("reasoning".to_string(), json!({ "summary": "auto" }));
+        if let Some(effort) = reasoning_effort {
+            payload_obj.insert("reasoning".to_string(), json!({ "effort": effort, "summary": "auto" }));
+        }
     }
 
     Ok(payload)
@@ -293,6 +359,36 @@ struct TokenData {
     id_token: Option<String>,
     expires_at: DateTime<Utc>,
     account_id: Option<String>,
+}
+
+fn required_account_id_header(
+    token_data: &TokenData,
+) -> Result<reqwest::header::HeaderValue, ProviderError> {
+    let account_id = token_data.account_id.as_deref().ok_or_else(|| {
+        ProviderError::Authentication(
+            "ChatGPT Codex account ID is unavailable; sign in again before sending a request".to_string(),
+        )
+    })?;
+    let account_id = account_id.trim();
+    if account_id.is_empty() {
+        return Err(ProviderError::Authentication(
+            "ChatGPT Codex account ID is invalid".to_string(),
+        ));
+    }
+    reqwest::header::HeaderValue::from_str(account_id).map_err(|_| {
+        ProviderError::Authentication("ChatGPT Codex account ID is invalid".to_string())
+    })
+}
+
+async fn handle_codex_response(
+    response: reqwest::Response,
+) -> Result<reqwest::Response, ProviderError> {
+    if response.status() == reqwest::StatusCode::BAD_REQUEST {
+        return Err(ProviderError::ExecutionError(
+            "ChatGPT Codex request failed (400 Bad Request)".to_string(),
+        ));
+    }
+    handle_status(response).await
 }
 
 #[derive(Debug, Clone)]
@@ -410,24 +506,9 @@ fn parse_jwt_claims_with_jwks(token: &str, jwks: &JwkSet) -> Result<JwtClaims> {
     Ok(token_data.claims)
 }
 
-fn parse_jwt_claims_unverified(token: &str) -> Option<JwtClaims> {
-    let parts: Vec<&str> = token.split('.').collect();
-    if parts.len() != 3 {
-        return None;
-    }
-    let payload = base64::engine::general_purpose::URL_SAFE_NO_PAD
-        .decode(parts[1])
-        .ok()?;
-    serde_json::from_slice(&payload).ok()
-}
-
 async fn parse_jwt_claims(token: &str, state: &ChatGptCodexAuthState) -> Option<JwtClaims> {
-    if let Ok(jwks) = get_jwks(state).await {
-        if let Ok(claims) = parse_jwt_claims_with_jwks(token, &jwks) {
-            return Some(claims);
-        }
-    }
-    parse_jwt_claims_unverified(token)
+    let jwks = get_jwks(state).await.ok()?;
+    parse_jwt_claims_with_jwks(token, &jwks).ok()
 }
 
 fn account_id_from_claims(claims: &JwtClaims) -> Option<String> {
@@ -894,13 +975,11 @@ impl ChatGptCodexProvider {
             .map_err(|e| ProviderError::Authentication(e.to_string()))?;
 
         let mut headers = reqwest::header::HeaderMap::new();
-        if let Some(account_id) = &token_data.account_id {
-            headers.insert(
-                reqwest::header::HeaderName::from_static("chatgpt-account-id"),
-                reqwest::header::HeaderValue::from_str(account_id)
-                    .map_err(|e| ProviderError::ExecutionError(e.to_string()))?,
-            );
-        }
+        let account_id_header = required_account_id_header(&token_data)?;
+        headers.insert(
+            reqwest::header::HeaderName::from_static("chatgpt-account-id"),
+            account_id_header,
+        );
 
         let client = reqwest::Client::new();
         let request = client
@@ -919,7 +998,7 @@ impl ChatGptCodexProvider {
             .await
             .map_err(|e| ProviderError::RequestFailed(e.to_string()))?;
 
-        handle_status(response).await
+        handle_codex_response(response).await
     }
 }
 
@@ -1385,5 +1464,105 @@ mod tests {
         let payload = create_codex_request(&model, "system prompt", &[], &[]).unwrap();
         let instructions = payload["instructions"].as_str().unwrap();
         assert_eq!(instructions, "system prompt");
+    }
+
+    #[test]
+    fn gpt56_models_are_registered_and_default_stays_gpt55() {
+        assert_eq!(CHATGPT_CODEX_DEFAULT_MODEL, "gpt-5.5");
+        for model in ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"] {
+            assert!(known_model_names().contains(&model));
+        }
+        assert_eq!(reasoning_levels_for_model("gpt-5.6-terra"), &["high"]);
+        assert!(reasoning_levels_for_model("gpt-5.6-luna").is_empty());
+        assert!(reasoning_levels_for_model("gpt-5.6-sol").is_empty());
+    }
+
+    #[test]
+    fn terra_high_uses_gpt56_protocol_policy() {
+        let mut config = ModelConfig::new("gpt-5.6-terra");
+        config.request_params = Some([("thinking_effort".to_string(), json!("high"))].into());
+        let payload = create_codex_request(&config, "sys", &[], &[]).unwrap();
+        assert_eq!(payload["reasoning"]["effort"], "high");
+        assert_eq!(payload["reasoning"]["summary"], "auto");
+        assert_eq!(payload["stream"], true);
+        assert_eq!(payload["text"]["verbosity"], "low");
+        assert_eq!(payload["include"], json!(["reasoning.encrypted_content"]));
+        assert!(payload.get("originator").is_none());
+        assert!(payload.get("user_agent").is_none());
+    }
+
+    #[test]
+    fn unsupported_gpt56_effort_fails_before_transport() {
+        let mut config = ModelConfig::new("gpt-5.6-terra");
+        config.request_params = Some([("thinking_effort".to_string(), json!("low"))].into());
+        let error = create_codex_request(&config, "sys", &[], &[]).unwrap_err();
+        assert!(error.to_string().contains("not supported"));
+    }
+
+    #[test]
+    fn default_gpt56_requests_do_not_invent_an_effort() {
+        for model in ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"] {
+            let payload = create_codex_request(&ModelConfig::new(model), "sys", &[], &[])
+                .unwrap();
+            assert!(payload["reasoning"].get("effort").is_none());
+            assert_eq!(payload["reasoning"]["summary"], "auto");
+        }
+    }
+
+    #[test]
+    fn legacy_models_keep_legacy_payload_shape() {
+        let config = ModelConfig::new("gpt-5.5");
+        let payload = create_codex_request(&config, "sys", &[], &[]).unwrap();
+        assert!(payload.get("stream").is_none());
+        assert!(payload.get("text").is_none());
+        assert!(payload.get("include").is_none());
+        assert!(payload.get("originator").is_none());
+    }
+
+    fn test_token_data(account_id: Option<&str>) -> TokenData {
+        TokenData {
+            access_token: "test-access-token".to_string(),
+            refresh_token: "test-refresh-token".to_string(),
+            id_token: None,
+            expires_at: Utc::now(),
+            account_id: account_id.map(str::to_string),
+        }
+    }
+
+    #[test]
+    fn account_id_is_required_and_never_sent_without_a_value() {
+        let error = required_account_id_header(&test_token_data(None)).unwrap_err();
+        assert!(error.to_string().contains("account ID is unavailable"));
+        let header = required_account_id_header(&test_token_data(Some("acct-test"))).unwrap();
+        assert_eq!(header.to_str().unwrap(), "acct-test");
+    }
+
+    #[test]
+    fn invalid_account_id_is_rejected_locally() {
+        for account_id in ["", "   ", "bad\naccount"] {
+            let error = required_account_id_header(&test_token_data(Some(account_id))).unwrap_err();
+            assert!(error.to_string().contains("account ID is invalid"));
+        }
+        let header = required_account_id_header(&test_token_data(Some("  acct-test  "))).unwrap();
+        assert_eq!(header.to_str().unwrap(), "acct-test");
+    }
+
+    #[tokio::test]
+    async fn bad_request_is_sanitized_and_model_switching_is_not_attempted() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .respond_with(ResponseTemplate::new(400).set_body_string("secret-model-details"))
+            .mount(&server)
+            .await;
+        let response = reqwest::Client::new()
+            .post(server.uri())
+            .send()
+            .await
+            .unwrap();
+        let error = handle_codex_response(response).await.unwrap_err();
+        let message = error.to_string();
+        assert!(message.contains("400 Bad Request"));
+        assert!(!message.contains("secret-model-details"));
+        assert!(!message.contains("fallback"));
     }
 }
