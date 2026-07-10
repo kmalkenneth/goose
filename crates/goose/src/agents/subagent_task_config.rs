@@ -17,6 +17,7 @@ pub struct TaskConfig {
     pub parent_working_dir: PathBuf,
     pub extensions: Vec<ExtensionConfig>,
     pub max_turns: Option<usize>,
+    pub depth: u32,
 }
 
 impl fmt::Debug for TaskConfig {
@@ -50,6 +51,7 @@ impl TaskConfig {
                     .get_param::<usize>("GOOSE_SUBAGENT_MAX_TURNS")
                     .unwrap_or(DEFAULT_SUBAGENT_MAX_TURNS),
             ),
+            depth: 0,
         }
     }
 

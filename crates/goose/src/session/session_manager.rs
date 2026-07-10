@@ -92,6 +92,9 @@ pub struct Session {
     pub archived_at: Option<DateTime<Utc>>,
     #[serde(default)]
     pub project_id: Option<String>,
+    /// Duck: subagent delegation depth (0 = root session). Enables recursive delegation.
+    #[serde(default)]
+    pub subagent_depth: Option<u32>,
     #[serde(default)]
     pub parent_session_id: Option<String>,
     #[serde(default)]
@@ -168,6 +171,7 @@ pub struct SessionUpdateBuilder<'a> {
 
     project_id: Option<Option<String>>,
     parent_session_id: Option<Option<String>>,
+    subagent_depth: Option<Option<u32>>,
 }
 
 #[derive(Serialize, ToSchema, Debug)]
@@ -205,6 +209,7 @@ impl<'a> SessionUpdateBuilder<'a> {
             archived_at: None,
             project_id: None,
             parent_session_id: None,
+            subagent_depth: None,
         }
     }
 
@@ -310,6 +315,11 @@ impl<'a> SessionUpdateBuilder<'a> {
 
     pub fn parent_session_id(mut self, parent_session_id: Option<String>) -> Self {
         self.parent_session_id = Some(parent_session_id);
+        self
+    }
+
+    pub fn subagent_depth(mut self, subagent_depth: Option<u32>) -> Self {
+        self.subagent_depth = Some(subagent_depth);
         self
     }
 }
@@ -707,6 +717,7 @@ impl Default for Session {
             archived_at: None,
             project_id: None,
             parent_session_id: None,
+            subagent_depth: None,
             last_message_snippet: None,
         }
     }
@@ -802,6 +813,7 @@ impl sqlx::FromRow<'_, sqlx::sqlite::SqliteRow> for Session {
             archived_at: row.try_get("archived_at").ok(),
             project_id: row.try_get("project_id").ok().flatten(),
             parent_session_id: row.try_get("parent_session_id").ok().flatten(),
+            subagent_depth: None,
             last_message_snippet: None,
         })
     }

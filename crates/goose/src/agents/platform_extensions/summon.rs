@@ -505,6 +505,7 @@ impl SummonClient {
                 .session_manager
                 .update(&session.id)
                 .parent_session_id(Some(task_config.parent_session_id.clone()))
+                .subagent_depth(Some(task_config.depth))
                 .apply()
                 .await
                 .map_err(|e| format!("Failed to link subagent to parent session: {}", e))?;
@@ -1247,8 +1248,16 @@ impl SummonClient {
             .await
             .map_err(|e| format!("Failed to get session: {}", e))?;
 
-        if session.session_type == SessionType::SubAgent {
-            return Err("Delegated tasks cannot spawn further delegations".to_string());
+        // Duck: allow recursive subagent delegation with configurable depth limit
+        let current_depth = session.subagent_depth.unwrap_or(0);
+        let max_depth = Config::global()
+            .get_param::<u32>("DUCK_MAX_SUBAGENT_DEPTH")
+            .unwrap_or(0); // 0 = unlimited
+        if max_depth > 0 && current_depth >= max_depth {
+            return Err(format!(
+                "Maximum subagent depth ({}) reached",
+                max_depth
+            ));
         }
 
         if params.r#async {
@@ -1601,7 +1610,7 @@ impl SummonClient {
             None => session.working_dir.clone(),
         };
 
-        let task_config = TaskConfig::new(
+        let mut task_config = TaskConfig::new(
             provider,
             model_config,
             &session.id,
@@ -1609,6 +1618,7 @@ impl SummonClient {
             extensions,
         )
         .with_max_turns(Some(max_turns));
+        task_config.depth = session.subagent_depth.unwrap_or(0) + 1;
 
         Ok(task_config)
     }
@@ -1920,9 +1930,8 @@ impl McpClientTrait for SummonClient {
 
         let mut tools = vec![self.create_load_tool()];
 
-        if !is_subagent {
-            tools.push(self.create_delegate_tool());
-        }
+        // Duck: subagents can also delegate (recursive depth)
+        tools.push(self.create_delegate_tool());
 
         Ok(ListToolsResult {
             tools,
