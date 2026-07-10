@@ -48,8 +48,23 @@ jobs:
         with:
           version: 10
 
-      - name: Install system deps for deb building
-        run: sudo apt-get update && sudo apt-get install -y fakeroot dpkg dpkg-dev
+      - name: Install system deps for desktop building
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libnss3-dev \
+            libatk-bridge2.0-dev \
+            libdrm2 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxrandr2 \
+            libgbm1 \
+            libxss1 \
+            rpm \
+            fakeroot \
+            dpkg-dev \
+            libasound2
 
       - name: Install dependencies
         run: cd ui/desktop && pnpm install --frozen-lockfile
@@ -58,7 +73,7 @@ jobs:
         run: cd ui/desktop && npx electron-forge package
 
       - name: Make .deb
-        run: cd ui/desktop && npx electron-forge make --targets deb --arch x86_64
+        run: cd ui/desktop && pnpm run make -- --platform=linux --arch=x64
 
       - name: Find .deb
         id: find-deb
