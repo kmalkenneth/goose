@@ -64,7 +64,7 @@ jobs:
             rpm \
             fakeroot \
             dpkg-dev \
-            libasound2
+            libasound2t64
 
       - name: Install dependencies
         run: cd ui/desktop && pnpm install --frozen-lockfile
