@@ -48,6 +48,9 @@ jobs:
         with:
           version: 10
 
+      - name: Install system deps for deb building
+        run: sudo apt-get update && sudo apt-get install -y fakeroot dpkg dpkg-dev
+
       - name: Install dependencies
         run: cd ui/desktop && pnpm install --frozen-lockfile
 
