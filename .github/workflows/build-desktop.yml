@@ -88,8 +88,10 @@ jobs:
           name: duck-desktop-deb
           path: ui/desktop/out/make/deb/**/*.deb
 
-      - name: Upload to release
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Upload to rolling release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: duck-desktop
+          name: Duck Desktop (rolling)
+          body: Latest Duck Desktop build from main. Auto-updated.
           files: ${{ steps.find-deb.outputs.deb_path }}
