@@ -1343,42 +1343,6 @@
   "hub.goodMorning": {
     "defaultMessage": "早上好"
   },
-  "huggingFaceModelSearch.download": {
-    "defaultMessage": "下载"
-  },
-  "huggingFaceModelSearch.downloaded": {
-    "defaultMessage": "已下载"
-  },
-  "huggingFaceModelSearch.downloading": {
-    "defaultMessage": "下载中…"
-  },
-  "huggingFaceModelSearch.loadingVariants": {
-    "defaultMessage": "正在加载变体…"
-  },
-  "huggingFaceModelSearch.noGgufModels": {
-    "defaultMessage": "未找到此查询的 GGUF 模型。"
-  },
-  "huggingFaceModelSearch.recommended": {
-    "defaultMessage": "推荐"
-  },
-  "huggingFaceModelSearch.searchError": {
-    "defaultMessage": "搜索错误：{details}"
-  },
-  "huggingFaceModelSearch.searchFailed": {
-    "defaultMessage": "搜索失败，请重试。"
-  },
-  "huggingFaceModelSearch.searchHuggingFace": {
-    "defaultMessage": "搜索 HuggingFace"
-  },
-  "huggingFaceModelSearch.searchNoData": {
-    "defaultMessage": "搜索未返回数据。"
-  },
-  "huggingFaceModelSearch.searchPlaceholder": {
-    "defaultMessage": "搜索 GGUF 模型…"
-  },
-  "huggingFaceModelSearch.tooLarge": {
-    "defaultMessage": "可能超出内存（模型 {size}，可用 {available}）"
-  },
   "huggingFaceSignInPrompt.failedToConfigure": {
     "defaultMessage": "登录 Hugging Face 失败：{error}"
   },
@@ -1709,162 +1673,6 @@
   "loadingGoose.waiting": {
     "defaultMessage": "goose 正在等待…"
   },
-  "localInferenceSettings.deleteConfirm": {
-    "defaultMessage": "删除此模型？之后可以重新下载。"
-  },
-  "localInferenceSettings.description": {
-    "defaultMessage": "下载和管理用于本地推理的大模型，无需 API 密钥。在 HuggingFace 搜索任意 GGUF 模型，或使用下方推荐。"
-  },
-  "localInferenceSettings.dismiss": {
-    "defaultMessage": "关闭"
-  },
-  "localInferenceSettings.download": {
-    "defaultMessage": "下载"
-  },
-  "localInferenceSettings.downloadCancelled": {
-    "defaultMessage": "下载已取消"
-  },
-  "localInferenceSettings.downloadedModels": {
-    "defaultMessage": "已下载的模型"
-  },
-  "localInferenceSettings.downloadFailed": {
-    "defaultMessage": "下载失败"
-  },
-  "localInferenceSettings.downloading": {
-    "defaultMessage": "下载中"
-  },
-  "localInferenceSettings.downloadProgress": {
-    "defaultMessage": "{downloaded} / {total}（{percent}%）"
-  },
-  "localInferenceSettings.evictFromMemory": {
-    "defaultMessage": "Evict from memory"
-  },
-  "localInferenceSettings.featuredModels": {
-    "defaultMessage": "推荐模型"
-  },
-  "localInferenceSettings.huggingFaceSignInNote": {
-    "defaultMessage": "登录后可在搜索和下载模型时提高速率限制，并访问私有或受限的 Hugging Face 仓库。"
-  },
-  "localInferenceSettings.loadedInMemory": {
-    "defaultMessage": "Loaded in memory"
-  },
-  "localInferenceSettings.modelSettings": {
-    "defaultMessage": "模型设置"
-  },
-  "localInferenceSettings.modelSettingsTitle": {
-    "defaultMessage": "模型设置"
-  },
-  "localInferenceSettings.noModels": {
-    "defaultMessage": "暂无可用模型"
-  },
-  "localInferenceSettings.recommended": {
-    "defaultMessage": "推荐"
-  },
-  "localInferenceSettings.remaining": {
-    "defaultMessage": "剩余 {time}"
-  },
-  "localInferenceSettings.retry": {
-    "defaultMessage": "重试"
-  },
-  "localInferenceSettings.showAllFeatured": {
-    "defaultMessage": "显示全部推荐（还有 {count} 个）"
-  },
-  "localInferenceSettings.showRecommendedOnly": {
-    "defaultMessage": "仅显示推荐"
-  },
-  "localInferenceSettings.title": {
-    "defaultMessage": "本地推理模型"
-  },
-  "localInferenceSettings.vision": {
-    "defaultMessage": "视觉"
-  },
-  "localInferenceSettings.visionEncoderDownloading": {
-    "defaultMessage": "视觉编码器下载中…"
-  },
-  "localInferenceSettings.visionEncoderNotDownloaded": {
-    "defaultMessage": "视觉编码器尚未下载"
-  },
-  "localModelManager.active": {
-    "defaultMessage": "启用中"
-  },
-  "localModelManager.deleteConfirm": {
-    "defaultMessage": "删除此模型？之后可以重新下载。"
-  },
-  "localModelManager.download": {
-    "defaultMessage": "下载"
-  },
-  "localModelManager.downloaded": {
-    "defaultMessage": "已下载"
-  },
-  "localModelManager.gpuAcceleration": {
-    "defaultMessage": "支持 GPU 加速（NVIDIA 走 CUDA，Apple Silicon 走 Metal）。硬件加速需要在构建时启用 GPU 特性。"
-  },
-  "localModelManager.noModels": {
-    "defaultMessage": "暂无可用模型"
-  },
-  "localModelManager.recommended": {
-    "defaultMessage": "推荐"
-  },
-  "localModelManager.recommendedForHardware": {
-    "defaultMessage": "为你的硬件推荐"
-  },
-  "localModelManager.showAllModels": {
-    "defaultMessage": "显示全部模型（还有 {count} 个）"
-  },
-  "localModelManager.showRecommendedOnly": {
-    "defaultMessage": "仅显示推荐"
-  },
-  "localModelPicker.bestForMachine": {
-    "defaultMessage": "最适合你的机器"
-  },
-  "localModelPicker.cancelDownload": {
-    "defaultMessage": "取消下载"
-  },
-  "localModelPicker.checkingModels": {
-    "defaultMessage": "正在检查可用模型…"
-  },
-  "localModelPicker.downloading": {
-    "defaultMessage": "正在下载 {modelId}"
-  },
-  "localModelPicker.downloadModel": {
-    "defaultMessage": "下载 {modelId}（{size}）"
-  },
-  "localModelPicker.failedToLoad": {
-    "defaultMessage": "加载可用模型失败，请重试。"
-  },
-  "localModelPicker.failedToStartDownload": {
-    "defaultMessage": "启动下载失败，请重试。"
-  },
-  "localModelPicker.hideOtherSizes": {
-    "defaultMessage": "隐藏其他规格"
-  },
-  "localModelPicker.localModelsNote": {
-    "defaultMessage": "本地模型让一切都在你的机器上运行，完全保护隐私。性能和上下文窗口大小可能因硬件和模型规模而与云端提供商有差异。"
-  },
-  "localModelPicker.lostConnection": {
-    "defaultMessage": "下载连接中断，请重试。"
-  },
-  "localModelPicker.modelNotFound": {
-    "defaultMessage": "未找到模型"
-  },
-  "localModelPicker.ready": {
-    "defaultMessage": "就绪"
-  },
-  "localModelPicker.selectModel": {
-    "defaultMessage": "选择一个模型"
-  },
-  "localModelPicker.showOtherSizes": {
-    "defaultMessage": "显示另外 {count} 个规格"
-  },
-  "localModelPicker.startingDownload": {
-    "defaultMessage": "开始下载…"
-  },
-  "localModelPicker.tryAgain": {
-    "defaultMessage": "重试"
-  },
-  "localModelPicker.useModel": {
-    "defaultMessage": "使用 {modelId}"
-  },
   "markdownContent.cancel": {
     "defaultMessage": "取消"
   },
@@ -2120,12 +1928,6 @@
   "modelsBottomBar.loadingModel": {
     "defaultMessage": "正在加载模型…"
   },
-  "modelsBottomBar.localModelSettings": {
-    "defaultMessage": "本地模型设置"
-  },
-  "modelsBottomBar.localModelSettingsTitle": {
-    "defaultMessage": "本地模型设置 — {modelName}"
-  },
   "modelsBottomBar.resolvedModel": {
     "defaultMessage": "解析后的模型"
   },
@@ -2137,159 +1939,6 @@
   },
   "modelSettingsButtons.switchModels": {
     "defaultMessage": "切换模型"
-  },
-  "modelSettingsPanel.batchSize": {
-    "defaultMessage": "批处理大小"
-  },
-  "modelSettingsPanel.batchSizeDescription": {
-    "defaultMessage": "提示词处理批大小"
-  },
-  "modelSettingsPanel.builtinChatTemplate": {
-    "defaultMessage": "内置模板"
-  },
-  "modelSettingsPanel.builtinChatTemplateDescription": {
-    "defaultMessage": "选择 llama.cpp 内置模板名称"
-  },
-  "modelSettingsPanel.chatTemplate": {
-    "defaultMessage": "聊天模板"
-  },
-  "modelSettingsPanel.chatTemplateBuiltin": {
-    "defaultMessage": "内置"
-  },
-  "modelSettingsPanel.chatTemplateCustomInline": {
-    "defaultMessage": "自定义内联"
-  },
-  "modelSettingsPanel.chatTemplateDescription": {
-    "defaultMessage": "使用嵌入式 GGUF 元数据、llama.cpp 内置模板或内联 Jinja 模板"
-  },
-  "modelSettingsPanel.chatTemplateEmbedded": {
-    "defaultMessage": "嵌入式"
-  },
-  "modelSettingsPanel.contextAndGeneration": {
-    "defaultMessage": "上下文与生成"
-  },
-  "modelSettingsPanel.contextSize": {
-    "defaultMessage": "上下文大小"
-  },
-  "modelSettingsPanel.contextSizeDescription": {
-    "defaultMessage": "最大上下文窗口（0 = 模型默认）"
-  },
-  "modelSettingsPanel.customChatTemplate": {
-    "defaultMessage": "自定义聊天模板"
-  },
-  "modelSettingsPanel.customChatTemplateDescription": {
-    "defaultMessage": "粘贴完整的 Jinja 聊天模板源码"
-  },
-  "modelSettingsPanel.etaLearningRate": {
-    "defaultMessage": "Eta（学习率）"
-  },
-  "modelSettingsPanel.flashAttention": {
-    "defaultMessage": "Flash Attention"
-  },
-  "modelSettingsPanel.flashAttentionDescription": {
-    "defaultMessage": "启用 Flash Attention 优化"
-  },
-  "modelSettingsPanel.frequencyPenalty": {
-    "defaultMessage": "频率惩罚"
-  },
-  "modelSettingsPanel.frequencyPenaltyDescription": {
-    "defaultMessage": "0.0 = 关闭"
-  },
-  "modelSettingsPanel.gpuLayers": {
-    "defaultMessage": "GPU 层数"
-  },
-  "modelSettingsPanel.gpuLayersDescription": {
-    "defaultMessage": "卸载到 GPU 的层数"
-  },
-  "modelSettingsPanel.loadingSettings": {
-    "defaultMessage": "正在加载设置…"
-  },
-  "modelSettingsPanel.lockModelInRam": {
-    "defaultMessage": "将模型锁定在内存（mlock）"
-  },
-  "modelSettingsPanel.lockModelInRamDescription": {
-    "defaultMessage": "防止模型被交换到磁盘"
-  },
-  "modelSettingsPanel.maxOutputTokens": {
-    "defaultMessage": "最大输出令牌"
-  },
-  "modelSettingsPanel.maxOutputTokensDescription": {
-    "defaultMessage": "生成令牌上限"
-  },
-  "modelSettingsPanel.minP": {
-    "defaultMessage": "Min P"
-  },
-  "modelSettingsPanel.performance": {
-    "defaultMessage": "性能"
-  },
-  "modelSettingsPanel.presencePenalty": {
-    "defaultMessage": "出现惩罚"
-  },
-  "modelSettingsPanel.presencePenaltyDescription": {
-    "defaultMessage": "0.0 = 关闭"
-  },
-  "modelSettingsPanel.repeatPenalty": {
-    "defaultMessage": "重复惩罚"
-  },
-  "modelSettingsPanel.repeatPenaltyDescription": {
-    "defaultMessage": "1.0 = 关闭"
-  },
-  "modelSettingsPanel.repeatWindow": {
-    "defaultMessage": "重复窗口"
-  },
-  "modelSettingsPanel.repeatWindowDescription": {
-    "defaultMessage": "回看的令牌数"
-  },
-  "modelSettingsPanel.repetitionPenalty": {
-    "defaultMessage": "重复惩罚"
-  },
-  "modelSettingsPanel.reset": {
-    "defaultMessage": "重置"
-  },
-  "modelSettingsPanel.resetToDefaults": {
-    "defaultMessage": "重置为默认"
-  },
-  "modelSettingsPanel.samplingStrategy": {
-    "defaultMessage": "采样策略"
-  },
-  "modelSettingsPanel.saving": {
-    "defaultMessage": "保存中…"
-  },
-  "modelSettingsPanel.seed": {
-    "defaultMessage": "随机种子"
-  },
-  "modelSettingsPanel.tauTargetEntropy": {
-    "defaultMessage": "Tau（目标熵）"
-  },
-  "modelSettingsPanel.temperature": {
-    "defaultMessage": "温度"
-  },
-  "modelSettingsPanel.threads": {
-    "defaultMessage": "线程数"
-  },
-  "modelSettingsPanel.threadsDescription": {
-    "defaultMessage": "用于生成的 CPU 线程数"
-  },
-  "modelSettingsPanel.toolCalling": {
-    "defaultMessage": "工具调用"
-  },
-  "modelSettingsPanel.toolCallingAuto": {
-    "defaultMessage": "自动"
-  },
-  "modelSettingsPanel.toolCallingDescription": {
-    "defaultMessage": "选择本地模型如何使用原生或模拟工具调用"
-  },
-  "modelSettingsPanel.toolCallingForceEmulated": {
-    "defaultMessage": "强制模拟"
-  },
-  "modelSettingsPanel.toolCallingForceNative": {
-    "defaultMessage": "强制原生"
-  },
-  "modelSettingsPanel.topK": {
-    "defaultMessage": "Top K"
-  },
-  "modelSettingsPanel.topP": {
-    "defaultMessage": "Top P"
   },
   "modelsSection.resetDescription": {
     "defaultMessage": "清空已选的模型和提供商设置，重新开始"
@@ -2380,9 +2029,6 @@
   },
   "onboardingSuccess.learnMore": {
     "defaultMessage": "了解更多"
-  },
-  "onboardingSuccess.localModelReady": {
-    "defaultMessage": "本地模型就绪"
   },
   "onboardingSuccess.privacyDescription": {
     "defaultMessage": "匿名使用数据有助于改善 goose。我们绝不采集你的对话、代码或个人数据。"
@@ -2819,14 +2465,8 @@
   "providerSelector.connectProviderDescription": {
     "defaultMessage": "连接 OpenAI、Anthropic、Google 等"
   },
-  "providerSelector.localModelDescription": {
-    "defaultMessage": "下载模型并完全运行在你的机器上。无需 API 密钥，无需账号。"
-  },
   "providerSelector.selectProvider": {
     "defaultMessage": "选择提供商"
-  },
-  "providerSelector.useLocalModel": {
-    "defaultMessage": "使用本地模型"
   },
   "providerSettings.configurationSettings": {
     "defaultMessage": "提供商配置项"
@@ -4040,9 +3680,6 @@
   "settingsView.tabKeyboard": {
     "defaultMessage": "键盘"
   },
-  "settingsView.tabLocalInference": {
-    "defaultMessage": "本地推理"
-  },
   "settingsView.tabModels": {
     "defaultMessage": "模型"
   },
@@ -4279,12 +3916,6 @@
   },
   "switchModelModal.loadingModels": {
     "defaultMessage": "正在加载模型…"
-  },
-  "switchModelModal.localModelsDescription": {
-    "defaultMessage": "要使用本地推理，你需要先下载一个模型到电脑上。前往 设置 → 模型 管理本地模型。"
-  },
-  "switchModelModal.localModelsTitle": {
-    "defaultMessage": "本地模型需要先下载"
   },
   "switchModelModal.providerPlaceholder": {
     "defaultMessage": "提供商，输入以搜索"

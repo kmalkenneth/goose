@@ -94,7 +94,6 @@ mod extensions;
 mod fork_session;
 mod list_sessions;
 mod load_session;
-mod local_inference;
 mod manage_sessions;
 mod new_session;
 mod onboarding;
@@ -261,7 +260,7 @@ fn meta_string(
 
 fn agent_capabilities_meta() -> Option<Meta> {
     let mut goose = serde_json::Map::new();
-    if cfg!(feature = "local-inference") {
+    if false {
         goose.insert("localInference".to_string(), serde_json::json!({}));
     }
 
@@ -2501,44 +2500,6 @@ impl GooseAcpAgent {
         ))
     }
 
-    async fn send_local_inference_progress_update(
-        &self,
-        cx: &ConnectionTo<Client>,
-        acp_session_id: &SessionId,
-        session_id: &str,
-        agent: &Arc<Agent>,
-    ) -> Result<(), agent_client_protocol::Error> {
-        let Ok(provider) = agent.provider().await else {
-            return Ok(());
-        };
-        if provider.get_name() != "local" {
-            return Ok(());
-        }
-
-        let model_config = agent.model_config_for_session(session_id).await.ok();
-        let model_name = model_config
-            .as_ref()
-            .map(|config| config.model_name.clone())
-            .unwrap_or_else(|| "local model".to_string());
-
-        #[cfg(feature = "local-inference")]
-        if let Some(model_config) = model_config.as_ref() {
-            if crate::providers::local_inference::is_model_loaded(&model_config.model_name)
-                .await
-                .unwrap_or(false)
-            {
-                return Ok(());
-            }
-        }
-
-        send_progress_message_update(
-            cx,
-            self.supports_goose_custom_notifications(),
-            acp_session_id.0.as_ref(),
-            format!("Loading local model {model_name}..."),
-        )
-    }
-
     async fn on_load_session(
         &self,
         cx: &ConnectionTo<Client>,
@@ -2578,15 +2539,6 @@ impl GooseAcpAgent {
 
         if let Err(error) = Self::send_active_run_update(cx, &args.session_id, Some(&run_id)) {
             self.clear_active_run(&session_id, &run_id).await;
-            return Err(error);
-        }
-
-        if let Err(error) = self
-            .send_local_inference_progress_update(cx, &args.session_id, &session_id, &agent)
-            .await
-        {
-            self.clear_active_run(&session_id, &run_id).await;
-            let _ = Self::send_active_run_update(cx, &args.session_id, None);
             return Err(error);
         }
 

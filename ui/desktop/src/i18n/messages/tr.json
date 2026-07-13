@@ -1343,42 +1343,6 @@
   "hub.goodMorning": {
     "defaultMessage": "Günaydın"
   },
-  "huggingFaceModelSearch.download": {
-    "defaultMessage": "İndir"
-  },
-  "huggingFaceModelSearch.downloaded": {
-    "defaultMessage": "İndirildi"
-  },
-  "huggingFaceModelSearch.downloading": {
-    "defaultMessage": "İndiriliyor…"
-  },
-  "huggingFaceModelSearch.loadingVariants": {
-    "defaultMessage": "Çeşitler yükleniyor..."
-  },
-  "huggingFaceModelSearch.noGgufModels": {
-    "defaultMessage": "Bu sorgu için GGUF modeli bulunamadı."
-  },
-  "huggingFaceModelSearch.recommended": {
-    "defaultMessage": "Önerilen"
-  },
-  "huggingFaceModelSearch.searchError": {
-    "defaultMessage": "Arama hatası: {details}"
-  },
-  "huggingFaceModelSearch.searchFailed": {
-    "defaultMessage": "Arama başarısız oldu. Lütfen tekrar deneyin."
-  },
-  "huggingFaceModelSearch.searchHuggingFace": {
-    "defaultMessage": "Arama HuggingFace"
-  },
-  "huggingFaceModelSearch.searchNoData": {
-    "defaultMessage": "Arama hiçbir veri döndürmedi."
-  },
-  "huggingFaceModelSearch.searchPlaceholder": {
-    "defaultMessage": "GGUF modellerini arayın..."
-  },
-  "huggingFaceModelSearch.tooLarge": {
-    "defaultMessage": "Belleğe sığmayabilir ({size} modeli, {available} mevcuttur)"
-  },
   "huggingFaceSignInPrompt.failedToConfigure": {
     "defaultMessage": "Hugging Face oturumu açılamadı: {error}"
   },
@@ -1709,162 +1673,6 @@
   "loadingGoose.waiting": {
     "defaultMessage": "goose bekliyor…"
   },
-  "localInferenceSettings.deleteConfirm": {
-    "defaultMessage": "Bu model silinsin mi? Daha sonra tekrar indirebilirsiniz."
-  },
-  "localInferenceSettings.description": {
-    "defaultMessage": "API anahtarları olmadan çıkarım yapmak için yerel LLM modellerini indirin ve yönetin. Herhangi bir GGUF modeli için HuggingFace'yi arayın veya aşağıdaki öne çıkan seçimleri kullanın."
-  },
-  "localInferenceSettings.dismiss": {
-    "defaultMessage": "Kapat"
-  },
-  "localInferenceSettings.download": {
-    "defaultMessage": "İndir"
-  },
-  "localInferenceSettings.downloadCancelled": {
-    "defaultMessage": "İndirme iptal edildi"
-  },
-  "localInferenceSettings.downloadedModels": {
-    "defaultMessage": "İndirilen Modeller"
-  },
-  "localInferenceSettings.downloadFailed": {
-    "defaultMessage": "İndirme başarısız oldu"
-  },
-  "localInferenceSettings.downloading": {
-    "defaultMessage": "İndiriliyor"
-  },
-  "localInferenceSettings.downloadProgress": {
-    "defaultMessage": "{downloaded} / {total} (%{percent})"
-  },
-  "localInferenceSettings.evictFromMemory": {
-    "defaultMessage": "Evict from memory"
-  },
-  "localInferenceSettings.featuredModels": {
-    "defaultMessage": "Öne Çıkan Modeller"
-  },
-  "localInferenceSettings.huggingFaceSignInNote": {
-    "defaultMessage": "Model ararken ve indirirken hız sınırlarını artırmak ve özel ya da erişimi kısıtlı Hugging Face depolarına erişmek için oturum açın."
-  },
-  "localInferenceSettings.loadedInMemory": {
-    "defaultMessage": "Loaded in memory"
-  },
-  "localInferenceSettings.modelSettings": {
-    "defaultMessage": "Modeli Ayarları"
-  },
-  "localInferenceSettings.modelSettingsTitle": {
-    "defaultMessage": "Modeli ayarları"
-  },
-  "localInferenceSettings.noModels": {
-    "defaultMessage": "Mevcut model yok"
-  },
-  "localInferenceSettings.recommended": {
-    "defaultMessage": "Önerilen"
-  },
-  "localInferenceSettings.remaining": {
-    "defaultMessage": "{time} kaldı"
-  },
-  "localInferenceSettings.retry": {
-    "defaultMessage": "Yeniden dene"
-  },
-  "localInferenceSettings.showAllFeatured": {
-    "defaultMessage": "Tüm öne çıkanları göster ({count} daha fazlası)"
-  },
-  "localInferenceSettings.showRecommendedOnly": {
-    "defaultMessage": "Yalnızca önerilenleri göster"
-  },
-  "localInferenceSettings.title": {
-    "defaultMessage": "Yerel Çıkarım Modelleri"
-  },
-  "localInferenceSettings.vision": {
-    "defaultMessage": "Vizyon"
-  },
-  "localInferenceSettings.visionEncoderDownloading": {
-    "defaultMessage": "Vision enkoder indiriliyor…"
-  },
-  "localInferenceSettings.visionEncoderNotDownloaded": {
-    "defaultMessage": "Görüntü kodlayıcı indirilmedi"
-  },
-  "localModelManager.active": {
-    "defaultMessage": "Aktif"
-  },
-  "localModelManager.deleteConfirm": {
-    "defaultMessage": "Bu model silinsin mi? Daha sonra tekrar indirebilirsiniz."
-  },
-  "localModelManager.download": {
-    "defaultMessage": "İndir"
-  },
-  "localModelManager.downloaded": {
-    "defaultMessage": "İndirildi"
-  },
-  "localModelManager.gpuAcceleration": {
-    "defaultMessage": "GPU hızlandırmayı destekler (NVIDIA için CUDA, Apple Silicon için Metal). Donanım hızlandırma için derleme sırasında GPU özelliklerinin etkinleştirilmesi gerekir."
-  },
-  "localModelManager.noModels": {
-    "defaultMessage": "Mevcut model yok"
-  },
-  "localModelManager.recommended": {
-    "defaultMessage": "Önerilen"
-  },
-  "localModelManager.recommendedForHardware": {
-    "defaultMessage": "Donanımınız için önerilir"
-  },
-  "localModelManager.showAllModels": {
-    "defaultMessage": "Tüm modelleri göster ({count} daha fazlası)"
-  },
-  "localModelManager.showRecommendedOnly": {
-    "defaultMessage": "Yalnızca önerilenleri göster"
-  },
-  "localModelPicker.bestForMachine": {
-    "defaultMessage": "Makineniz için en iyisi"
-  },
-  "localModelPicker.cancelDownload": {
-    "defaultMessage": "İndirmeyi İptal Et"
-  },
-  "localModelPicker.checkingModels": {
-    "defaultMessage": "Mevcut modeller kontrol ediliyor..."
-  },
-  "localModelPicker.downloading": {
-    "defaultMessage": "{modelId} indiriliyor"
-  },
-  "localModelPicker.downloadModel": {
-    "defaultMessage": "{modelId}'yi ({size}) indirin"
-  },
-  "localModelPicker.failedToLoad": {
-    "defaultMessage": "Mevcut modeller yüklenemedi. Lütfen tekrar deneyin."
-  },
-  "localModelPicker.failedToStartDownload": {
-    "defaultMessage": "İndirme işlemi başlatılamadı. Lütfen tekrar deneyin."
-  },
-  "localModelPicker.hideOtherSizes": {
-    "defaultMessage": "Diğer boyutları gizle"
-  },
-  "localModelPicker.localModelsNote": {
-    "defaultMessage": "Yerel modeller, tam gizlilik için her şeyi makinenizde tutar. Performans ve bağlam penceresi boyutu, donanım ve model boyutunuza bağlı olarak bulut sağlayıcılara göre farklılık gösterebilir."
-  },
-  "localModelPicker.lostConnection": {
-    "defaultMessage": "İndirmek için bağlantı kesildi. Lütfen tekrar deneyin."
-  },
-  "localModelPicker.modelNotFound": {
-    "defaultMessage": "Model bulunamadı"
-  },
-  "localModelPicker.ready": {
-    "defaultMessage": "Hazır"
-  },
-  "localModelPicker.selectModel": {
-    "defaultMessage": "Bir model seçin"
-  },
-  "localModelPicker.showOtherSizes": {
-    "defaultMessage": "{count} diğer boyutları göster"
-  },
-  "localModelPicker.startingDownload": {
-    "defaultMessage": "İndirme başlatılıyor..."
-  },
-  "localModelPicker.tryAgain": {
-    "defaultMessage": "Tekrar Deneyin"
-  },
-  "localModelPicker.useModel": {
-    "defaultMessage": "{modelId}'yi kullanın"
-  },
   "markdownContent.cancel": {
     "defaultMessage": "İptal"
   },
@@ -2120,12 +1928,6 @@
   "modelsBottomBar.loadingModel": {
     "defaultMessage": "Model yükleniyor..."
   },
-  "modelsBottomBar.localModelSettings": {
-    "defaultMessage": "Yerel Model Ayarları"
-  },
-  "modelsBottomBar.localModelSettingsTitle": {
-    "defaultMessage": "Yerel Model Ayarları — {modelName}"
-  },
   "modelsBottomBar.resolvedModel": {
     "defaultMessage": "Çözümlenen model"
   },
@@ -2137,159 +1939,6 @@
   },
   "modelSettingsButtons.switchModels": {
     "defaultMessage": "Modelleri değiştir"
-  },
-  "modelSettingsPanel.batchSize": {
-    "defaultMessage": "Parti boyutu"
-  },
-  "modelSettingsPanel.batchSizeDescription": {
-    "defaultMessage": "Hızlı işlem toplu"
-  },
-  "modelSettingsPanel.builtinChatTemplate": {
-    "defaultMessage": "Yerleşik şablon"
-  },
-  "modelSettingsPanel.builtinChatTemplateDescription": {
-    "defaultMessage": "Bir llama.cpp yerleşik şablon adı seçin"
-  },
-  "modelSettingsPanel.chatTemplate": {
-    "defaultMessage": "Sohbet şablonu"
-  },
-  "modelSettingsPanel.chatTemplateBuiltin": {
-    "defaultMessage": "Yerleşik"
-  },
-  "modelSettingsPanel.chatTemplateCustomInline": {
-    "defaultMessage": "Özel satır içi"
-  },
-  "modelSettingsPanel.chatTemplateDescription": {
-    "defaultMessage": "Gömülü GGUF meta verilerini, llama.cpp yerleşik şablonunu veya satır içi Jinja şablonunu kullan"
-  },
-  "modelSettingsPanel.chatTemplateEmbedded": {
-    "defaultMessage": "Gömülü"
-  },
-  "modelSettingsPanel.contextAndGeneration": {
-    "defaultMessage": "Bağlam ve Üretim"
-  },
-  "modelSettingsPanel.contextSize": {
-    "defaultMessage": "Bağlam boyutu"
-  },
-  "modelSettingsPanel.contextSizeDescription": {
-    "defaultMessage": "Maksimum bağlam penceresi (0 = model varsayılanı)"
-  },
-  "modelSettingsPanel.customChatTemplate": {
-    "defaultMessage": "Özel sohbet şablonu"
-  },
-  "modelSettingsPanel.customChatTemplateDescription": {
-    "defaultMessage": "Tam Jinja sohbet şablonu kaynağını yapıştır"
-  },
-  "modelSettingsPanel.etaLearningRate": {
-    "defaultMessage": "Eta (öğrenme oranı)"
-  },
-  "modelSettingsPanel.flashAttention": {
-    "defaultMessage": "Flaş dikkat"
-  },
-  "modelSettingsPanel.flashAttentionDescription": {
-    "defaultMessage": "Flaş dikkati optimizasyonunu etkinleştir"
-  },
-  "modelSettingsPanel.frequencyPenalty": {
-    "defaultMessage": "Frekans cezası"
-  },
-  "modelSettingsPanel.frequencyPenaltyDescription": {
-    "defaultMessage": "0,0 = kapalı"
-  },
-  "modelSettingsPanel.gpuLayers": {
-    "defaultMessage": "GPU katmanları"
-  },
-  "modelSettingsPanel.gpuLayersDescription": {
-    "defaultMessage": "GPU'ya aktarılacak katmanlar"
-  },
-  "modelSettingsPanel.loadingSettings": {
-    "defaultMessage": "Ayarlar yükleniyor..."
-  },
-  "modelSettingsPanel.lockModelInRam": {
-    "defaultMessage": "Modeli RAM'e kilitle (mlock)"
-  },
-  "modelSettingsPanel.lockModelInRamDescription": {
-    "defaultMessage": "Modelin diske değiştirilmesini önleyin"
-  },
-  "modelSettingsPanel.maxOutputTokens": {
-    "defaultMessage": "Maksimum çıkış jetonları"
-  },
-  "modelSettingsPanel.maxOutputTokensDescription": {
-    "defaultMessage": "Oluşturulan jetonların üst sınırı"
-  },
-  "modelSettingsPanel.minP": {
-    "defaultMessage": "Min P"
-  },
-  "modelSettingsPanel.performance": {
-    "defaultMessage": "Performans"
-  },
-  "modelSettingsPanel.presencePenalty": {
-    "defaultMessage": "Varlık cezası"
-  },
-  "modelSettingsPanel.presencePenaltyDescription": {
-    "defaultMessage": "0,0 = kapalı"
-  },
-  "modelSettingsPanel.repeatPenalty": {
-    "defaultMessage": "Cezayı tekrarla"
-  },
-  "modelSettingsPanel.repeatPenaltyDescription": {
-    "defaultMessage": "1,0 = kapalı"
-  },
-  "modelSettingsPanel.repeatWindow": {
-    "defaultMessage": "Pencereyi tekrarla"
-  },
-  "modelSettingsPanel.repeatWindowDescription": {
-    "defaultMessage": "Geriye bakılacak jetonlar"
-  },
-  "modelSettingsPanel.repetitionPenalty": {
-    "defaultMessage": "Tekrarlama Cezası"
-  },
-  "modelSettingsPanel.reset": {
-    "defaultMessage": "Sıfırla"
-  },
-  "modelSettingsPanel.resetToDefaults": {
-    "defaultMessage": "Varsayılanlara sıfırla"
-  },
-  "modelSettingsPanel.samplingStrategy": {
-    "defaultMessage": "Örnekleme Stratejisi"
-  },
-  "modelSettingsPanel.saving": {
-    "defaultMessage": "Kaydediliyor..."
-  },
-  "modelSettingsPanel.seed": {
-    "defaultMessage": "tohum"
-  },
-  "modelSettingsPanel.tauTargetEntropy": {
-    "defaultMessage": "Tau (hedef entropisi)"
-  },
-  "modelSettingsPanel.temperature": {
-    "defaultMessage": "Sıcaklık"
-  },
-  "modelSettingsPanel.threads": {
-    "defaultMessage": "Konular"
-  },
-  "modelSettingsPanel.threadsDescription": {
-    "defaultMessage": "Nesil için CPU iş parçacıkları"
-  },
-  "modelSettingsPanel.toolCalling": {
-    "defaultMessage": "Araç çağırma"
-  },
-  "modelSettingsPanel.toolCallingAuto": {
-    "defaultMessage": "Otomatik"
-  },
-  "modelSettingsPanel.toolCallingDescription": {
-    "defaultMessage": "Yerel modellerin yerel veya emüle araç çağırmayı nasıl seçeceğini belirleyin"
-  },
-  "modelSettingsPanel.toolCallingForceEmulated": {
-    "defaultMessage": "Emüle etmeye zorla"
-  },
-  "modelSettingsPanel.toolCallingForceNative": {
-    "defaultMessage": "Yereli zorla"
-  },
-  "modelSettingsPanel.topK": {
-    "defaultMessage": "En İyi K"
-  },
-  "modelSettingsPanel.topP": {
-    "defaultMessage": "Üst P"
   },
   "modelsSection.resetDescription": {
     "defaultMessage": "Yeni bir başlangıç yapmak için seçtiğiniz model ve sağlayıcı ayarlarını temizleyin"
@@ -2380,9 +2029,6 @@
   },
   "onboardingSuccess.learnMore": {
     "defaultMessage": "Daha fazla bilgi edinin"
-  },
-  "onboardingSuccess.localModelReady": {
-    "defaultMessage": "Yerli model hazır"
   },
   "onboardingSuccess.privacyDescription": {
     "defaultMessage": "Anonim kullanım verileri goose'nin iyileştirilmesine yardımcı olur. Konuşmalarınızı, kodlarınızı veya kişisel verilerinizi asla toplamıyoruz."
@@ -2819,14 +2465,8 @@
   "providerSelector.connectProviderDescription": {
     "defaultMessage": "OpenAI, Anthropic, Google, vb.'yi bağlayın"
   },
-  "providerSelector.localModelDescription": {
-    "defaultMessage": "Bir model indirin ve tamamen makinenizde çalıştırın. API anahtarı yok, hesap yok."
-  },
   "providerSelector.selectProvider": {
     "defaultMessage": "Bir sağlayıcı seçin"
-  },
-  "providerSelector.useLocalModel": {
-    "defaultMessage": "Yerel Bir Model Kullanın"
   },
   "providerSettings.configurationSettings": {
     "defaultMessage": "Sağlayıcı Yapılandırma Ayarları"
@@ -4040,9 +3680,6 @@
   "settingsView.tabKeyboard": {
     "defaultMessage": "Klavye"
   },
-  "settingsView.tabLocalInference": {
-    "defaultMessage": "Yerel Çıkarım"
-  },
   "settingsView.tabModels": {
     "defaultMessage": "Modeller"
   },
@@ -4279,12 +3916,6 @@
   },
   "switchModelModal.loadingModels": {
     "defaultMessage": "Modeller yükleniyor…"
-  },
-  "switchModelModal.localModelsDescription": {
-    "defaultMessage": "Yerel çıkarımı kullanmak için öncelikle bilgisayarınıza bir model indirmeniz gerekir. Yerel modelleri yönetmek için Ayarlar → Modeller'e gidin."
-  },
-  "switchModelModal.localModelsTitle": {
-    "defaultMessage": "Önce yerel modellerin indirilmesi gerekiyor"
   },
   "switchModelModal.providerPlaceholder": {
     "defaultMessage": "Sağlayıcı, aramak için yazın"

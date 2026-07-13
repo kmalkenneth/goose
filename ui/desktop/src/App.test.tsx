@@ -47,10 +47,6 @@ vi.mock('./sessions', () => ({
   createSession: vi.fn(),
 }));
 
-vi.mock('./acp/capabilities', () => ({
-  getAcpFeatureCapabilities: vi.fn().mockResolvedValue({ localInference: true }),
-}));
-
 // Mock the ACP providers module used by OnboardingGuard so it doesn't try to
 // open a real ACP client connection during tests. Returning null defaults
 // keeps the app in the "brand new" (no provider configured) onboarding state.

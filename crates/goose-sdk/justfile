@@ -88,8 +88,6 @@ crates-publish dry_run="true":
     for crate in \
         goose-provider-types \
         goose-sdk-types \
-        goose-download-manager \
-        goose-local-inference \
         goose-providers \
         goose-sdk; do \
         cargo publish -p "$crate" $dry_run_flag --allow-dirty; \
@@ -114,8 +112,6 @@ bump-version rust_version:
     crate_names = [
         "goose-provider-types",
         "goose-sdk-types",
-        "goose-download-manager",
-        "goose-local-inference",
         "goose-providers",
         "goose-sdk",
     ]
@@ -134,8 +130,6 @@ bump-version rust_version:
     dependency_names = [
         "goose-provider-types",
         "goose-sdk-types",
-        "goose-download-manager",
-        "goose-local-inference",
         "goose-providers",
     ]
     for path in crate_paths.values():

@@ -1343,42 +1343,6 @@
   "hub.goodMorning": {
     "defaultMessage": "सुप्रभात"
   },
-  "huggingFaceModelSearch.download": {
-    "defaultMessage": "डाउनलोड करें"
-  },
-  "huggingFaceModelSearch.downloaded": {
-    "defaultMessage": "डाउनलोड"
-  },
-  "huggingFaceModelSearch.downloading": {
-    "defaultMessage": "डाउनलोड हो रहा है..."
-  },
-  "huggingFaceModelSearch.loadingVariants": {
-    "defaultMessage": "वेरिएंट लोड हो रहा है..."
-  },
-  "huggingFaceModelSearch.noGgufModels": {
-    "defaultMessage": "इस क्वेरी के लिए कोई GGUF मॉडल नहीं मिला."
-  },
-  "huggingFaceModelSearch.recommended": {
-    "defaultMessage": "अनुशंसित"
-  },
-  "huggingFaceModelSearch.searchError": {
-    "defaultMessage": "खोज त्रुटि: {details}"
-  },
-  "huggingFaceModelSearch.searchFailed": {
-    "defaultMessage": "खोज विफल रही. कृपया पुन: प्रयास करें।"
-  },
-  "huggingFaceModelSearch.searchHuggingFace": {
-    "defaultMessage": "हगिंगफेस खोजें"
-  },
-  "huggingFaceModelSearch.searchNoData": {
-    "defaultMessage": "खोज से कोई डेटा नहीं मिला."
-  },
-  "huggingFaceModelSearch.searchPlaceholder": {
-    "defaultMessage": "जीजीयूएफ मॉडल खोजें..."
-  },
-  "huggingFaceModelSearch.tooLarge": {
-    "defaultMessage": "मेमोरी में फ़िट नहीं हो सकता ({size} मॉडल, {available} उपलब्ध)"
-  },
   "huggingFaceSignInPrompt.failedToConfigure": {
     "defaultMessage": "हगिंग फेस में साइन इन करने में विफल: {error}"
   },
@@ -1709,162 +1673,6 @@
   "loadingGoose.waiting": {
     "defaultMessage": "goose इंतज़ार कर रहा है..."
   },
-  "localInferenceSettings.deleteConfirm": {
-    "defaultMessage": "यह मॉडल हटाएं? आप इसे बाद में पुनः डाउनलोड कर सकते हैं."
-  },
-  "localInferenceSettings.description": {
-    "defaultMessage": "API कुंजियों के बिना अनुमान के लिए स्थानीय एलएलएम मॉडल डाउनलोड और प्रबंधित करें। किसी भी जीजीयूएफ मॉडल के लिए हगिंगफेस खोजें या नीचे दिए गए चुनिंदा विकल्पों का उपयोग करें।"
-  },
-  "localInferenceSettings.dismiss": {
-    "defaultMessage": "खारिज करें"
-  },
-  "localInferenceSettings.download": {
-    "defaultMessage": "डाउनलोड करें"
-  },
-  "localInferenceSettings.downloadCancelled": {
-    "defaultMessage": "डाउनलोड रद्द किया गया"
-  },
-  "localInferenceSettings.downloadedModels": {
-    "defaultMessage": "डाउनलोड किए गए मॉडल"
-  },
-  "localInferenceSettings.downloadFailed": {
-    "defaultMessage": "डाउनलोड विफल रहा"
-  },
-  "localInferenceSettings.downloading": {
-    "defaultMessage": "डाउनलोड हो रहा है"
-  },
-  "localInferenceSettings.downloadProgress": {
-    "defaultMessage": "{downloaded} / {total} ({percent}%)"
-  },
-  "localInferenceSettings.evictFromMemory": {
-    "defaultMessage": "Evict from memory"
-  },
-  "localInferenceSettings.featuredModels": {
-    "defaultMessage": "विशेष रुप से प्रदर्शित मॉडल"
-  },
-  "localInferenceSettings.huggingFaceSignInNote": {
-    "defaultMessage": "मॉडल खोजते और डाउनलोड करते समय दर सीमा बढ़ाने के लिए और निजी या गेटेड हगिंग फेस रिपॉजिटरी तक पहुंचने के लिए साइन इन करें।"
-  },
-  "localInferenceSettings.loadedInMemory": {
-    "defaultMessage": "Loaded in memory"
-  },
-  "localInferenceSettings.modelSettings": {
-    "defaultMessage": "मॉडल Settings"
-  },
-  "localInferenceSettings.modelSettingsTitle": {
-    "defaultMessage": "मॉडल सेटिंग्स"
-  },
-  "localInferenceSettings.noModels": {
-    "defaultMessage": "कोई मॉडल उपलब्ध नहीं"
-  },
-  "localInferenceSettings.recommended": {
-    "defaultMessage": "अनुशंसित"
-  },
-  "localInferenceSettings.remaining": {
-    "defaultMessage": "{time} शेष"
-  },
-  "localInferenceSettings.retry": {
-    "defaultMessage": "पुनः प्रयास करें"
-  },
-  "localInferenceSettings.showAllFeatured": {
-    "defaultMessage": "सभी विशेष रुप से प्रदर्शित दिखाएँ ({count} अधिक)"
-  },
-  "localInferenceSettings.showRecommendedOnly": {
-    "defaultMessage": "केवल अनुशंसित दिखाएं"
-  },
-  "localInferenceSettings.title": {
-    "defaultMessage": "स्थानीय अनुमान मॉडल"
-  },
-  "localInferenceSettings.vision": {
-    "defaultMessage": "दृष्टि"
-  },
-  "localInferenceSettings.visionEncoderDownloading": {
-    "defaultMessage": "विज़न एनकोडर डाउनलोड हो रहा है..."
-  },
-  "localInferenceSettings.visionEncoderNotDownloaded": {
-    "defaultMessage": "विज़न एनकोडर डाउनलोड नहीं हुआ"
-  },
-  "localModelManager.active": {
-    "defaultMessage": "सक्रिय"
-  },
-  "localModelManager.deleteConfirm": {
-    "defaultMessage": "यह मॉडल हटाएं? आप इसे बाद में पुनः डाउनलोड कर सकते हैं."
-  },
-  "localModelManager.download": {
-    "defaultMessage": "डाउनलोड करें"
-  },
-  "localModelManager.downloaded": {
-    "defaultMessage": "डाउनलोड"
-  },
-  "localModelManager.gpuAcceleration": {
-    "defaultMessage": "GPU त्वरण का समर्थन करता है (NVIDIA के लिए CUDA, Apple सिलिकॉन के लिए मेटल)। हार्डवेयर त्वरण के लिए निर्माण समय पर GPU सुविधाओं को सक्षम किया जाना चाहिए।"
-  },
-  "localModelManager.noModels": {
-    "defaultMessage": "कोई मॉडल उपलब्ध नहीं"
-  },
-  "localModelManager.recommended": {
-    "defaultMessage": "अनुशंसित"
-  },
-  "localModelManager.recommendedForHardware": {
-    "defaultMessage": "आपके हार्डवेयर के लिए अनुशंसित"
-  },
-  "localModelManager.showAllModels": {
-    "defaultMessage": "सभी मॉडल दिखाएं ({count} अधिक)"
-  },
-  "localModelManager.showRecommendedOnly": {
-    "defaultMessage": "केवल अनुशंसित दिखाएं"
-  },
-  "localModelPicker.bestForMachine": {
-    "defaultMessage": "आपकी मशीन के लिए सर्वोत्तम"
-  },
-  "localModelPicker.cancelDownload": {
-    "defaultMessage": "डाउनलोड रद्द करें"
-  },
-  "localModelPicker.checkingModels": {
-    "defaultMessage": "उपलब्ध मॉडलों की जाँच की जा रही है..."
-  },
-  "localModelPicker.downloading": {
-    "defaultMessage": "डाउनलोड हो रहा है {modelId}"
-  },
-  "localModelPicker.downloadModel": {
-    "defaultMessage": "डाउनलोड करें {modelId} ({size})"
-  },
-  "localModelPicker.failedToLoad": {
-    "defaultMessage": "उपलब्ध मॉडल लोड करने में विफल. कृपया पुन: प्रयास करें।"
-  },
-  "localModelPicker.failedToStartDownload": {
-    "defaultMessage": "डाउनलोड प्रारंभ करने में विफल. कृपया पुन: प्रयास करें।"
-  },
-  "localModelPicker.hideOtherSizes": {
-    "defaultMessage": "अन्य आकार छिपाएँ"
-  },
-  "localModelPicker.localModelsNote": {
-    "defaultMessage": "स्थानीय मॉडल पूरी गोपनीयता के लिए आपकी मशीन पर सब कुछ रखते हैं। आपके हार्डवेयर और मॉडल आकार के आधार पर क्लाउड प्रदाताओं की तुलना में प्रदर्शन और संदर्भ विंडो का आकार भिन्न हो सकता है।"
-  },
-  "localModelPicker.lostConnection": {
-    "defaultMessage": "डाउनलोड करने के लिए कनेक्शन खो गया. कृपया पुन: प्रयास करें।"
-  },
-  "localModelPicker.modelNotFound": {
-    "defaultMessage": "मॉडल नहीं मिला"
-  },
-  "localModelPicker.ready": {
-    "defaultMessage": "तैयार"
-  },
-  "localModelPicker.selectModel": {
-    "defaultMessage": "एक मॉडल चुनें"
-  },
-  "localModelPicker.showOtherSizes": {
-    "defaultMessage": "{count} अन्य आकार दिखाएँ"
-  },
-  "localModelPicker.startingDownload": {
-    "defaultMessage": "डाउनलोड प्रारंभ हो रहा है..."
-  },
-  "localModelPicker.tryAgain": {
-    "defaultMessage": "पुनः प्रयास करें"
-  },
-  "localModelPicker.useModel": {
-    "defaultMessage": "{modelId} का प्रयोग करें"
-  },
   "markdownContent.cancel": {
     "defaultMessage": "रद्द करें"
   },
@@ -2120,12 +1928,6 @@
   "modelsBottomBar.loadingModel": {
     "defaultMessage": "मॉडल लोड हो रहा है..."
   },
-  "modelsBottomBar.localModelSettings": {
-    "defaultMessage": "स्थानीय मॉडल Settings"
-  },
-  "modelsBottomBar.localModelSettingsTitle": {
-    "defaultMessage": "स्थानीय मॉडल Settings — {modelName}"
-  },
   "modelsBottomBar.resolvedModel": {
     "defaultMessage": "हल किया गया मॉडल"
   },
@@ -2137,159 +1939,6 @@
   },
   "modelSettingsButtons.switchModels": {
     "defaultMessage": "मॉडल स्विच करें"
-  },
-  "modelSettingsPanel.batchSize": {
-    "defaultMessage": "बैच का आकार"
-  },
-  "modelSettingsPanel.batchSizeDescription": {
-    "defaultMessage": "शीघ्र प्रसंस्करण बैच"
-  },
-  "modelSettingsPanel.builtinChatTemplate": {
-    "defaultMessage": "अंतर्निर्मित टेम्पलेट"
-  },
-  "modelSettingsPanel.builtinChatTemplateDescription": {
-    "defaultMessage": "एक llama.cpp अंतर्निहित टेम्पलेट नाम चुनें"
-  },
-  "modelSettingsPanel.chatTemplate": {
-    "defaultMessage": "चैट टेम्पलेट"
-  },
-  "modelSettingsPanel.chatTemplateBuiltin": {
-    "defaultMessage": "अंतर्निर्मित"
-  },
-  "modelSettingsPanel.chatTemplateCustomInline": {
-    "defaultMessage": "कस्टम इनलाइन"
-  },
-  "modelSettingsPanel.chatTemplateDescription": {
-    "defaultMessage": "एम्बेडेड GGUF मेटाडेटा, llama.cpp का बिल्ट-इन टेम्पलेट, या इनलाइन Jinja इस्तेमाल करें"
-  },
-  "modelSettingsPanel.chatTemplateEmbedded": {
-    "defaultMessage": "एंबेडेड"
-  },
-  "modelSettingsPanel.contextAndGeneration": {
-    "defaultMessage": "प्रसंग एवं पीढ़ी"
-  },
-  "modelSettingsPanel.contextSize": {
-    "defaultMessage": "प्रसंग का आकार"
-  },
-  "modelSettingsPanel.contextSizeDescription": {
-    "defaultMessage": "अधिकतम संदर्भ विंडो (0 = मॉडल डिफ़ॉल्ट)"
-  },
-  "modelSettingsPanel.customChatTemplate": {
-    "defaultMessage": "कस्टम चैट टेम्पलेट"
-  },
-  "modelSettingsPanel.customChatTemplateDescription": {
-    "defaultMessage": "संपूर्ण जिंजा चैट टेम्पलेट स्रोत चिपकाएँ"
-  },
-  "modelSettingsPanel.etaLearningRate": {
-    "defaultMessage": "एटा (सीखने की दर)"
-  },
-  "modelSettingsPanel.flashAttention": {
-    "defaultMessage": "फ़्लैश ध्यान"
-  },
-  "modelSettingsPanel.flashAttentionDescription": {
-    "defaultMessage": "फ़्लैश ध्यान अनुकूलन सक्षम करें"
-  },
-  "modelSettingsPanel.frequencyPenalty": {
-    "defaultMessage": "बारंबारता दंड"
-  },
-  "modelSettingsPanel.frequencyPenaltyDescription": {
-    "defaultMessage": "0.0 = बंद"
-  },
-  "modelSettingsPanel.gpuLayers": {
-    "defaultMessage": "जीपीयू परतें"
-  },
-  "modelSettingsPanel.gpuLayersDescription": {
-    "defaultMessage": "जीपीयू पर अपलोड करने के लिए परतें"
-  },
-  "modelSettingsPanel.loadingSettings": {
-    "defaultMessage": "सेटिंग लोड हो रही है..."
-  },
-  "modelSettingsPanel.lockModelInRam": {
-    "defaultMessage": "मॉडल को RAM में लॉक करें (mlock)"
-  },
-  "modelSettingsPanel.lockModelInRamDescription": {
-    "defaultMessage": "मॉडल को डिस्क पर स्वैप होने से रोकें"
-  },
-  "modelSettingsPanel.maxOutputTokens": {
-    "defaultMessage": "अधिकतम आउटपुट टोकन"
-  },
-  "modelSettingsPanel.maxOutputTokensDescription": {
-    "defaultMessage": "जेनरेट किए गए टोकन पर सीमा"
-  },
-  "modelSettingsPanel.minP": {
-    "defaultMessage": "मिन पी"
-  },
-  "modelSettingsPanel.performance": {
-    "defaultMessage": "प्रदर्शन"
-  },
-  "modelSettingsPanel.presencePenalty": {
-    "defaultMessage": "उपस्थिति दंड"
-  },
-  "modelSettingsPanel.presencePenaltyDescription": {
-    "defaultMessage": "0.0 = बंद"
-  },
-  "modelSettingsPanel.repeatPenalty": {
-    "defaultMessage": "बार-बार जुर्माना"
-  },
-  "modelSettingsPanel.repeatPenaltyDescription": {
-    "defaultMessage": "1.0 = बंद"
-  },
-  "modelSettingsPanel.repeatWindow": {
-    "defaultMessage": "विंडो दोहराएँ"
-  },
-  "modelSettingsPanel.repeatWindowDescription": {
-    "defaultMessage": "पीछे देखने के लिए टोकन"
-  },
-  "modelSettingsPanel.repetitionPenalty": {
-    "defaultMessage": "पुनरावृत्ति दंड"
-  },
-  "modelSettingsPanel.reset": {
-    "defaultMessage": "रीसेट करें"
-  },
-  "modelSettingsPanel.resetToDefaults": {
-    "defaultMessage": "डिफ़ॉल्ट पर रीसेट करें"
-  },
-  "modelSettingsPanel.samplingStrategy": {
-    "defaultMessage": "नमूनाकरण रणनीति"
-  },
-  "modelSettingsPanel.saving": {
-    "defaultMessage": "सहेजा जा रहा है..."
-  },
-  "modelSettingsPanel.seed": {
-    "defaultMessage": "बीज"
-  },
-  "modelSettingsPanel.tauTargetEntropy": {
-    "defaultMessage": "ताऊ (लक्ष्य एन्ट्रापी)"
-  },
-  "modelSettingsPanel.temperature": {
-    "defaultMessage": "तापमान"
-  },
-  "modelSettingsPanel.threads": {
-    "defaultMessage": "धागे"
-  },
-  "modelSettingsPanel.threadsDescription": {
-    "defaultMessage": "पीढ़ी के लिए सीपीयू धागे"
-  },
-  "modelSettingsPanel.toolCalling": {
-    "defaultMessage": "टूल कॉलिंग"
-  },
-  "modelSettingsPanel.toolCallingAuto": {
-    "defaultMessage": "ऑटो"
-  },
-  "modelSettingsPanel.toolCallingDescription": {
-    "defaultMessage": "चुनें कि स्थानीय मॉडल देशी या अनुकरणीय टूल कॉलिंग का चयन कैसे करते हैं"
-  },
-  "modelSettingsPanel.toolCallingForceEmulated": {
-    "defaultMessage": "बल का अनुकरण किया गया"
-  },
-  "modelSettingsPanel.toolCallingForceNative": {
-    "defaultMessage": "बल मूलनिवासी"
-  },
-  "modelSettingsPanel.topK": {
-    "defaultMessage": "शीर्ष के"
-  },
-  "modelSettingsPanel.topP": {
-    "defaultMessage": "शीर्ष पी"
   },
   "modelsSection.resetDescription": {
     "defaultMessage": "नए सिरे से शुरुआत करने के लिए अपने चयनित मॉडल और प्रदाता सेटिंग्स को साफ़ करें"
@@ -2380,9 +2029,6 @@
   },
   "onboardingSuccess.learnMore": {
     "defaultMessage": "और जानें"
-  },
-  "onboardingSuccess.localModelReady": {
-    "defaultMessage": "स्थानीय मॉडल तैयार"
   },
   "onboardingSuccess.privacyDescription": {
     "defaultMessage": "अनाम उपयोग डेटा goose को बेहतर बनाने में मदद करता है। हम कभी भी आपकी बातचीत, कोड या व्यक्तिगत डेटा एकत्र नहीं करते हैं।"
@@ -2819,14 +2465,8 @@
   "providerSelector.connectProviderDescription": {
     "defaultMessage": "OpenAI, Anthropic, Google, आदि से कनेक्ट करें"
   },
-  "providerSelector.localModelDescription": {
-    "defaultMessage": "एक मॉडल डाउनलोड करें और पूरी तरह से अपनी मशीन पर चलाएं। कोई API कुंजी नहीं, कोई खाता नहीं।"
-  },
   "providerSelector.selectProvider": {
     "defaultMessage": "एक प्रदाता चुनें"
-  },
-  "providerSelector.useLocalModel": {
-    "defaultMessage": "स्थानीय मॉडल का प्रयोग करें"
   },
   "providerSettings.configurationSettings": {
     "defaultMessage": "प्रदाता कॉन्फ़िगरेशन Settings"
@@ -4040,9 +3680,6 @@
   "settingsView.tabKeyboard": {
     "defaultMessage": "कीबोर्ड"
   },
-  "settingsView.tabLocalInference": {
-    "defaultMessage": "स्थानीय अनुमान"
-  },
   "settingsView.tabModels": {
     "defaultMessage": "मॉडल"
   },
@@ -4279,12 +3916,6 @@
   },
   "switchModelModal.loadingModels": {
     "defaultMessage": "मॉडल लोड हो रहे हैं…"
-  },
-  "switchModelModal.localModelsDescription": {
-    "defaultMessage": "स्थानीय अनुमान का उपयोग करने के लिए, आपको पहले अपने कंप्यूटर पर एक मॉडल डाउनलोड करना होगा। स्थानीय मॉडल प्रबंधित करने के लिए Settings → मॉडल पर जाएं।"
-  },
-  "switchModelModal.localModelsTitle": {
-    "defaultMessage": "स्थानीय मॉडल को पहले डाउनलोड करना होगा"
   },
   "switchModelModal.providerPlaceholder": {
     "defaultMessage": "प्रदाता, खोजने के लिए टाइप करें"

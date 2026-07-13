@@ -20,16 +20,6 @@ otel = [
     "dep:opentelemetry-stdout",
 ]
 code-mode = ["dep:pctx_code_mode"]
-local-inference = [
-    "dep:candle-core",
-    "dep:candle-nn",
-    "dep:candle-transformers",
-    "goose-providers/local-inference",
-    "dep:tokenizers",
-    "dep:symphonia",
-    "dep:rubato",
-    "dep:byteorder",
-]
 aws-providers = [
     "dep:aws-config",
     "dep:aws-smithy-types",
@@ -37,9 +27,6 @@ aws-providers = [
     "dep:aws-sdk-sagemakerruntime",
     "dep:smithy-transport-reqwest",
 ]
-cuda = ["local-inference", "candle-core/cuda", "candle-nn/cuda", "goose-providers/cuda"]
-vulkan = ["local-inference", "goose-providers/vulkan"]
-mlx = ["local-inference", "goose-providers/mlx"]
 rustls-tls = [
     "dep:rustls",
     "dep:rcgen",
@@ -136,7 +123,6 @@ once_cell = { workspace = true }
 etcetera = { workspace = true }
 fs-err = { version = "3.1", default-features = false }
 goose-providers = { path = "../goose-providers", default-features = false }
-goose-download-manager = { path = "../goose-download-manager" }
 goose-sdk-types = { path = "../goose-sdk-types" }
 rand = { workspace = true }
 utoipa = { workspace = true, features = ["chrono"] }
@@ -174,14 +160,6 @@ agent-client-protocol = { workspace = true, features = ["unstable"] }
 agent-client-protocol-http = { workspace = true }
 unicode-normalization = { version = "0.1.22", default-features = false, features = ["std"] }
 
-# For local Whisper transcription (optional, behind "local-inference" feature)
-candle-core = { workspace = true, optional = true }
-candle-nn = { workspace = true, optional = true }
-candle-transformers = { version = "0.11", default-features = false, optional = true }
-byteorder = { version = "1.5", default-features = false, features = ["std"], optional = true }
-tokenizers = { version = "0.23", default-features = false, features = ["onig"], optional = true }
-symphonia = { version = "0.5", default-features = false, features = ["aac", "adpcm", "alac", "isomp4", "mkv", "mp3", "pcm", "vorbis", "wav"], optional = true }
-rubato = { version = "0.16", default-features = false, optional = true }
 sys-info = { version = "0.9", default-features = false }
 
 schemars = { workspace = true, features = [
@@ -233,10 +211,7 @@ gethostname = "1.1.0"
 winapi = { workspace = true }
 keyring = { workspace = true, features = ["windows-native"], optional = true }
 
-# Platform-specific GPU acceleration for Whisper and local inference
 [target.'cfg(target_os = "macos")'.dependencies]
-candle-core = { workspace = true, features = ["metal"], optional = true }
-candle-nn = { workspace = true, features = ["metal"], optional = true }
 keyring = { workspace = true, features = ["apple-native"], optional = true }
 
 [target.'cfg(target_os = "linux")'.dependencies]
@@ -271,10 +246,6 @@ path = "examples/agent.rs"
 name = "databricks_oauth"
 path = "examples/databricks_oauth.rs"
 
-[[example]]
-name = "test_whisper"
-path = "examples/test_whisper.rs"
-required-features = ["local-inference"]
 
 [[bin]]
 name = "analyze_cli"
