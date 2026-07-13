@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  DESKTOP_RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'duck-desktop' }}
+
 jobs:
   build-linux:
     name: Build Linux .deb
@@ -87,10 +90,12 @@ jobs:
           name: duck-desktop-deb
           path: ui/desktop/out/make/deb/**/*.deb
 
-      - name: Upload to rolling release
+      - name: Upload Desktop release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: duck-desktop
-          name: Duck Desktop (rolling)
-          body: Latest Duck Desktop build from main. Auto-updated.
+          tag_name: ${{ env.DESKTOP_RELEASE_TAG }}
+          name: Duck Desktop (${{ env.DESKTOP_RELEASE_TAG }})
+          body: |
+            Duck Desktop build from source revision ${{ github.sha }}.
+            The release tag is immutable when built from a version tag.
           files: ${{ steps.find-deb.outputs.deb_path }}

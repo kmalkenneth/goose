@@ -324,6 +324,15 @@ pub(super) fn build_config_options(
 }
 
 fn thinking_effort_values(model_config: &ModelConfig) -> &'static [ThinkingEffort] {
+    if let Some(levels) =
+        crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name)
+    {
+        if levels.is_empty() {
+            return &[ThinkingEffort::Off];
+        }
+        return &[ThinkingEffort::Off, ThinkingEffort::High];
+    }
+
     if model_config.is_reasoning_model() {
         &[
             ThinkingEffort::Off,
@@ -338,6 +347,12 @@ fn thinking_effort_values(model_config: &ModelConfig) -> &'static [ThinkingEffor
 }
 
 fn current_thinking_effort_value(model_config: &ModelConfig) -> String {
+    if crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name)
+        .is_some_and(|levels| levels.is_empty())
+    {
+        return "off".to_string();
+    }
+
     if model_config.is_reasoning_model() {
         model_config
             .thinking_effort()
@@ -704,6 +719,45 @@ mod tests {
             &model_config,
             "openai",
             vec![SessionConfigSelectOption::new("openai", "openai")],
+        );
+        let option = options
+            .iter()
+            .find(|option| option.id.0.as_ref() == "thinking_effort")
+            .expect("thinking_effort option");
+        let select = match &option.kind {
+            SessionConfigKind::Select(select) => select,
+            _ => panic!("thinking_effort should be a select option"),
+        };
+
+        assert_eq!(select.current_value.0.as_ref(), "off");
+        assert_eq!(
+            select.options,
+            agent_client_protocol::schema::v1::SessionConfigSelectOptions::Ungrouped(vec![
+                SessionConfigSelectOption::new("off", "off")
+            ])
+        );
+    }
+
+    #[test]
+    fn test_build_config_options_limits_gpt56_effort() {
+        let mode_state = build_mode_state(GooseMode::Auto).unwrap();
+        let model_state = model_selection("gpt-5.6-luna", &["gpt-5.6-luna"]);
+        let model_config = ModelConfig::new("gpt-5.6-luna").with_merged_request_params(
+            std::collections::HashMap::from([(
+                "thinking_effort".to_string(),
+                serde_json::json!("high"),
+            )]),
+        );
+
+        let options = build_config_options(
+            &mode_state,
+            &model_state,
+            &model_config,
+            "chatgpt_codex",
+            vec![SessionConfigSelectOption::new(
+                "chatgpt_codex",
+                "chatgpt_codex",
+            )],
         );
         let option = options
             .iter()

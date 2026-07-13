@@ -27,17 +27,28 @@ pub fn model_config_from_user_config_with_session_settings(
 ) -> Result<ModelConfig> {
     let config = Config::global();
     let model = base_model_config_from_user_config(model_name.as_ref())?;
-    let model = materialize_model_config_inner(model, provider_name, false)?
+    let mut model = materialize_model_config_inner(model, provider_name, false)?
         .with_context_limit(context_limit)
         .with_inherited_session_settings_from(previous, request_params)
         .with_default_thinking_effort(config.get_goose_thinking_effort());
 
+    normalize_provider_model_config(provider_name, &mut model);
     Ok(model.with_canonical_limits(provider_name))
 }
 
-pub fn materialize_model_config(provider_name: &str, model: ModelConfig) -> Result<ModelConfig> {
-    let model = materialize_model_config_inner(model, provider_name, true)?;
+pub fn materialize_model_config(
+    provider_name: &str,
+    mut model: ModelConfig,
+) -> Result<ModelConfig> {
+    model = materialize_model_config_inner(model, provider_name, true)?;
+    normalize_provider_model_config(provider_name, &mut model);
     Ok(model.with_canonical_limits(provider_name))
+}
+
+fn normalize_provider_model_config(provider_name: &str, model: &mut ModelConfig) {
+    if provider_name == crate::providers::chatgpt_codex::CHATGPT_CODEX_PROVIDER_NAME {
+        crate::providers::chatgpt_codex::normalize_model_config(model);
+    }
 }
 
 fn materialize_model_config_inner(

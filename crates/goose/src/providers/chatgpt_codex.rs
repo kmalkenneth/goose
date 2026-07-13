@@ -42,7 +42,7 @@ const OAUTH_PORT: u16 = 1455;
 const OAUTH_TIMEOUT_SECS: u64 = 300;
 const HTML_AUTO_CLOSE_TIMEOUT_MS: u64 = 2000;
 
-const CHATGPT_CODEX_PROVIDER_NAME: &str = "chatgpt_codex";
+pub const CHATGPT_CODEX_PROVIDER_NAME: &str = "chatgpt_codex";
 pub const CHATGPT_CODEX_DEFAULT_MODEL: &str = "gpt-5.5";
 
 #[derive(Debug)]
@@ -262,6 +262,26 @@ fn is_gpt56_model(model: &str) -> bool {
     matches!(model, "gpt-5.6-luna" | "gpt-5.6-terra" | "gpt-5.6-sol")
 }
 
+fn omits_gpt56_reasoning_effort(model: &str) -> bool {
+    matches!(model, "gpt-5.6-luna" | "gpt-5.6-sol")
+}
+
+pub fn normalize_model_config(model_config: &mut ModelConfig) {
+    if omits_gpt56_reasoning_effort(&model_config.model_name) {
+        if let Some(request_params) = model_config.request_params.as_mut() {
+            request_params.remove("thinking_effort");
+        }
+    }
+}
+
+pub fn gpt56_reasoning_levels(model: &str) -> Option<&'static [&'static str]> {
+    match model {
+        "gpt-5.6-luna" | "gpt-5.6-sol" => Some(&[]),
+        "gpt-5.6-terra" => Some(&["high"]),
+        _ => None,
+    }
+}
+
 fn validate_gpt56_reasoning_effort(model: &str, effort: Option<&str>) -> Result<()> {
     if !is_gpt56_model(model) {
         return Ok(());
@@ -289,11 +309,8 @@ fn create_codex_request(
         .and_then(|params| params.get("thinking_effort"))
         .and_then(Value::as_str)
     {
-        if configured_effort != "off" {
-            validate_gpt56_reasoning_effort(
-                &model_config.model_name,
-                Some(configured_effort),
-            )?;
+        if configured_effort != "off" && !omits_gpt56_reasoning_effort(&model_config.model_name) {
+            validate_gpt56_reasoning_effort(&model_config.model_name, Some(configured_effort))?;
         }
     }
     let reasoning_effort = reasoning_effort_for_config(model_config);
@@ -1506,6 +1523,20 @@ mod tests {
                 .unwrap();
             assert!(payload["reasoning"].get("effort").is_none());
             assert_eq!(payload["reasoning"]["summary"], "auto");
+        }
+    }
+
+    #[test]
+    fn luna_and_sol_ignore_inherited_effort() {
+        use goose_providers::thinking::ThinkingEffort;
+
+        for model in ["gpt-5.6-luna", "gpt-5.6-sol"] {
+            let mut config = ModelConfig::new(model).with_thinking_effort(ThinkingEffort::High);
+            normalize_model_config(&mut config);
+            assert!(config.thinking_effort().is_none());
+
+            let payload = create_codex_request(&config, "sys", &[], &[]).unwrap();
+            assert!(payload["reasoning"].get("effort").is_none());
         }
     }
 
