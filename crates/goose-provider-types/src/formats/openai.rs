@@ -1513,10 +1513,11 @@ pub fn openai_reasoning_effort_for_thinking(
     let supported = openai_reasoning_efforts_for_model(model_name);
     let preferred: &[&str] = match effort {
         ThinkingEffort::Off => unreachable!(),
-        ThinkingEffort::Low => &["low", "medium", "high", "xhigh"],
-        ThinkingEffort::Medium => &["medium", "high", "low", "xhigh"],
-        ThinkingEffort::High => &["high", "medium", "xhigh", "low"],
-        ThinkingEffort::Max => &["xhigh", "high", "medium", "low"],
+        ThinkingEffort::Low => &["low", "medium", "high", "xhigh", "max"],
+        ThinkingEffort::Medium => &["medium", "high", "low", "xhigh", "max"],
+        ThinkingEffort::High => &["high", "medium", "xhigh", "low", "max"],
+        ThinkingEffort::XHigh => &["xhigh", "high", "medium", "low", "max"],
+        ThinkingEffort::Max => &["max", "xhigh", "high", "medium", "low"],
     };
 
     preferred

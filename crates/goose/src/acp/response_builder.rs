@@ -283,14 +283,14 @@ pub(super) fn build_config_options(
         .iter()
         .map(|m| SessionConfigSelectOption::new(m.id.clone(), m.name.clone()))
         .collect();
-    let thinking_effort_options = thinking_effort_values(model_config)
+    let thinking_effort_options = thinking_effort_values(model_config, provider_selection)
         .iter()
         .map(|effort| {
             let effort = effort.to_string();
             SessionConfigSelectOption::new(effort.clone(), effort)
         })
         .collect::<Vec<_>>();
-    let current_thinking_effort = current_thinking_effort_value(model_config);
+    let current_thinking_effort = current_thinking_effort_value(model_config, provider_selection);
     vec![
         SessionConfigOption::select(
             "provider",
@@ -323,14 +323,44 @@ pub(super) fn build_config_options(
     ]
 }
 
-fn thinking_effort_values(model_config: &ModelConfig) -> &'static [ThinkingEffort] {
-    if let Some(levels) =
-        crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name)
+fn thinking_effort_values(
+    model_config: &ModelConfig,
+    provider_selection: &str,
+) -> &'static [ThinkingEffort] {
+    let is_gpt56 =
+        crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name).is_some();
+    let is_fable = model_config.model_name == "claude-fable-5";
+    if (is_gpt56 && provider_selection != "chatgpt_codex")
+        || (is_fable && provider_selection != "anthropic")
     {
-        if levels.is_empty() {
-            return &[ThinkingEffort::Off];
-        }
-        return &[ThinkingEffort::Off, ThinkingEffort::High];
+        return &[
+            ThinkingEffort::Off,
+            ThinkingEffort::Low,
+            ThinkingEffort::Medium,
+            ThinkingEffort::High,
+        ];
+    }
+
+    if provider_selection == "chatgpt_codex" && is_gpt56 {
+        return &[
+            ThinkingEffort::Off,
+            ThinkingEffort::Low,
+            ThinkingEffort::Medium,
+            ThinkingEffort::High,
+            ThinkingEffort::XHigh,
+            ThinkingEffort::Max,
+        ];
+    }
+
+    if provider_selection == "anthropic" && is_fable {
+        return &[
+            ThinkingEffort::Off,
+            ThinkingEffort::Low,
+            ThinkingEffort::Medium,
+            ThinkingEffort::High,
+            ThinkingEffort::XHigh,
+            ThinkingEffort::Max,
+        ];
     }
 
     if model_config.is_reasoning_model() {
@@ -346,19 +376,20 @@ fn thinking_effort_values(model_config: &ModelConfig) -> &'static [ThinkingEffor
     }
 }
 
-fn current_thinking_effort_value(model_config: &ModelConfig) -> String {
-    if crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name)
-        .is_some_and(|levels| levels.is_empty())
+fn current_thinking_effort_value(model_config: &ModelConfig, provider_selection: &str) -> String {
+    if provider_selection == "chatgpt_codex"
+        && crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name)
+            .is_some_and(|levels| levels.is_empty())
     {
         return "off".to_string();
     }
 
-    if model_config.is_reasoning_model() {
-        model_config
-            .thinking_effort()
-            .or_else(|| Config::global().get_goose_thinking_effort())
-            .map(|effort| effort.to_string())
-            .unwrap_or_else(|| "off".to_string())
+    let selected = model_config
+        .thinking_effort()
+        .or_else(|| Config::global().get_goose_thinking_effort())
+        .unwrap_or(ThinkingEffort::Off);
+    if thinking_effort_values(model_config, provider_selection).contains(&selected) {
+        selected.to_string()
     } else {
         "off".to_string()
     }
@@ -674,10 +705,10 @@ mod tests {
     }
 
     #[test]
-    fn test_build_config_options_uses_current_thinking_effort() {
+    fn test_build_config_options_uses_current_fable_effort() {
         let mode_state = build_mode_state(GooseMode::Auto).unwrap();
-        let model_state = model_selection("claude-sonnet-4", &["claude-sonnet-4"]);
-        let model_config = ModelConfig::new("claude-sonnet-4").with_merged_request_params(
+        let model_state = model_selection("claude-fable-5", &["claude-fable-5"]);
+        let model_config = ModelConfig::new("claude-fable-5").with_merged_request_params(
             std::collections::HashMap::from([(
                 "thinking_effort".to_string(),
                 serde_json::json!("high"),
@@ -688,8 +719,8 @@ mod tests {
             &mode_state,
             &model_state,
             &model_config,
-            "openai",
-            vec![SessionConfigSelectOption::new("openai", "openai")],
+            "anthropic",
+            vec![SessionConfigSelectOption::new("anthropic", "anthropic")],
         );
         let option = options
             .iter()
@@ -701,6 +732,57 @@ mod tests {
         };
 
         assert_eq!(select.current_value.0.as_ref(), "high");
+        assert_eq!(
+            select.options,
+            agent_client_protocol::schema::v1::SessionConfigSelectOptions::Ungrouped(vec![
+                SessionConfigSelectOption::new("off", "off"),
+                SessionConfigSelectOption::new("low", "low"),
+                SessionConfigSelectOption::new("medium", "medium"),
+                SessionConfigSelectOption::new("high", "high"),
+                SessionConfigSelectOption::new("xhigh", "xhigh"),
+                SessionConfigSelectOption::new("max", "max"),
+            ])
+        );
+    }
+
+    #[test]
+    fn test_build_config_options_restricts_six_states_to_direct_provider() {
+        for (provider, model) in [("openai", "gpt-5.6-luna"), ("openai", "claude-fable-5")] {
+            let mode_state = build_mode_state(GooseMode::Auto).unwrap();
+            let model_state = model_selection(model, &[model]);
+            let model_config = ModelConfig::new(model).with_merged_request_params(
+                std::collections::HashMap::from([(
+                    "thinking_effort".to_string(),
+                    serde_json::json!("xhigh"),
+                )]),
+            );
+            let options = build_config_options(
+                &mode_state,
+                &model_state,
+                &model_config,
+                provider,
+                vec![SessionConfigSelectOption::new(provider, provider)],
+            );
+            let option = options
+                .iter()
+                .find(|option| option.id.0.as_ref() == "thinking_effort")
+                .expect("thinking_effort option");
+            let select = match &option.kind {
+                SessionConfigKind::Select(select) => select,
+                _ => panic!("thinking_effort should be a select option"),
+            };
+
+            assert_eq!(select.current_value.0.as_ref(), "off");
+            assert_eq!(
+                select.options,
+                agent_client_protocol::schema::v1::SessionConfigSelectOptions::Ungrouped(vec![
+                    SessionConfigSelectOption::new("off", "off"),
+                    SessionConfigSelectOption::new("low", "low"),
+                    SessionConfigSelectOption::new("medium", "medium"),
+                    SessionConfigSelectOption::new("high", "high"),
+                ])
+            );
+        }
     }
 
     #[test]
@@ -739,13 +821,13 @@ mod tests {
     }
 
     #[test]
-    fn test_build_config_options_limits_gpt56_effort() {
+    fn test_build_config_options_exposes_six_gpt56_effort_states() {
         let mode_state = build_mode_state(GooseMode::Auto).unwrap();
         let model_state = model_selection("gpt-5.6-luna", &["gpt-5.6-luna"]);
         let model_config = ModelConfig::new("gpt-5.6-luna").with_merged_request_params(
             std::collections::HashMap::from([(
                 "thinking_effort".to_string(),
-                serde_json::json!("high"),
+                serde_json::json!("xhigh"),
             )]),
         );
 
@@ -768,11 +850,16 @@ mod tests {
             _ => panic!("thinking_effort should be a select option"),
         };
 
-        assert_eq!(select.current_value.0.as_ref(), "off");
+        assert_eq!(select.current_value.0.as_ref(), "xhigh");
         assert_eq!(
             select.options,
             agent_client_protocol::schema::v1::SessionConfigSelectOptions::Ungrouped(vec![
-                SessionConfigSelectOption::new("off", "off")
+                SessionConfigSelectOption::new("off", "off"),
+                SessionConfigSelectOption::new("low", "low"),
+                SessionConfigSelectOption::new("medium", "medium"),
+                SessionConfigSelectOption::new("high", "high"),
+                SessionConfigSelectOption::new("xhigh", "xhigh"),
+                SessionConfigSelectOption::new("max", "max"),
             ])
         );
     }

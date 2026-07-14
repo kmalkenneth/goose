@@ -932,10 +932,7 @@ mod tests {
             parse_toolshim_backend("ollama").unwrap(),
             ToolshimBackend::Ollama
         );
-        assert_eq!(
-            parse_toolshim_backend("").unwrap(),
-            ToolshimBackend::Ollama
-        );
+        assert_eq!(parse_toolshim_backend("").unwrap(), ToolshimBackend::Ollama);
         let error = parse_toolshim_backend("something-else").unwrap_err();
         assert!(error.to_string().contains("Expected one of: ollama"));
     }

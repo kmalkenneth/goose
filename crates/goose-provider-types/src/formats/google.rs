@@ -577,7 +577,9 @@ fn get_thinking_config(
             ThinkingEffort::Off | ThinkingEffort::Low | ThinkingEffort::Medium => {
                 ThinkingLevel::Low
             }
-            ThinkingEffort::High | ThinkingEffort::Max => ThinkingLevel::High,
+            ThinkingEffort::High | ThinkingEffort::XHigh | ThinkingEffort::Max => {
+                ThinkingLevel::High
+            }
         };
 
         Some(ThinkingConfig {

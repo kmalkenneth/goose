@@ -10,6 +10,30 @@ use rmcp::model::Tool;
 use serde_json::Value;
 use std::collections::HashMap;
 
+pub fn validate_thinking_effort_for_provider(
+    provider_name: &str,
+    model_config: &ModelConfig,
+) -> Result<()> {
+    let Some(effort) = model_config.thinking_effort() else {
+        return Ok(());
+    };
+    let is_extended_effort = matches!(effort, ThinkingEffort::XHigh | ThinkingEffort::Max);
+    let unsupported = is_extended_effort
+        && ((crate::providers::chatgpt_codex::gpt56_reasoning_levels(&model_config.model_name)
+            .is_some()
+            && provider_name != "chatgpt_codex")
+            || (model_config.model_name == "claude-fable-5" && provider_name != "anthropic"));
+    if unsupported {
+        return Err(anyhow!(
+            "Thinking effort '{}' is not supported for model '{}' through provider '{}'",
+            effort,
+            model_config.model_name,
+            provider_name
+        ));
+    }
+    Ok(())
+}
+
 pub fn model_config_from_user_config(
     provider_name: &str,
     model_name: impl AsRef<str>,
@@ -27,28 +51,21 @@ pub fn model_config_from_user_config_with_session_settings(
 ) -> Result<ModelConfig> {
     let config = Config::global();
     let model = base_model_config_from_user_config(model_name.as_ref())?;
-    let mut model = materialize_model_config_inner(model, provider_name, false)?
+    let model = materialize_model_config_inner(model, provider_name, false)?
         .with_context_limit(context_limit)
         .with_inherited_session_settings_from(previous, request_params)
         .with_default_thinking_effort(config.get_goose_thinking_effort());
 
-    normalize_provider_model_config(provider_name, &mut model);
-    Ok(model.with_canonical_limits(provider_name))
+    let model = model.with_canonical_limits(provider_name);
+    validate_thinking_effort_for_provider(provider_name, &model)?;
+    Ok(model)
 }
 
-pub fn materialize_model_config(
-    provider_name: &str,
-    mut model: ModelConfig,
-) -> Result<ModelConfig> {
-    model = materialize_model_config_inner(model, provider_name, true)?;
-    normalize_provider_model_config(provider_name, &mut model);
-    Ok(model.with_canonical_limits(provider_name))
-}
-
-fn normalize_provider_model_config(provider_name: &str, model: &mut ModelConfig) {
-    if provider_name == crate::providers::chatgpt_codex::CHATGPT_CODEX_PROVIDER_NAME {
-        crate::providers::chatgpt_codex::normalize_model_config(model);
-    }
+pub fn materialize_model_config(provider_name: &str, model: ModelConfig) -> Result<ModelConfig> {
+    let model = materialize_model_config_inner(model, provider_name, true)?;
+    let model = model.with_canonical_limits(provider_name);
+    validate_thinking_effort_for_provider(provider_name, &model)?;
+    Ok(model)
 }
 
 fn materialize_model_config_inner(
@@ -254,5 +271,32 @@ fn parse_yaml_bool_config(key: &str, value: serde_yaml::Value) -> Result<bool> {
             serde_yaml::to_string(&other).unwrap_or_else(|_| "<unprintable>".to_string()).trim()
         ))
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_thinking_effort_for_provider;
+    use goose_providers::model::ModelConfig;
+    use goose_providers::thinking::ThinkingEffort;
+
+    #[test]
+    fn rejects_extended_effort_when_target_model_uses_wrong_provider() {
+        for (provider, model) in [("openai", "gpt-5.6-luna"), ("openai", "claude-fable-5")] {
+            let config = ModelConfig::new(model).with_thinking_effort(ThinkingEffort::XHigh);
+            let error = validate_thinking_effort_for_provider(provider, &config)
+                .expect_err("unsupported extended effort should fail before transport");
+            assert!(error.to_string().contains("not supported"));
+        }
+    }
+
+    #[test]
+    fn accepts_extended_effort_for_direct_target_providers() {
+        let gpt_config = ModelConfig::new("gpt-5.6-luna").with_thinking_effort(ThinkingEffort::Max);
+        validate_thinking_effort_for_provider("chatgpt_codex", &gpt_config).unwrap();
+
+        let fable_config =
+            ModelConfig::new("claude-fable-5").with_thinking_effort(ThinkingEffort::XHigh);
+        validate_thinking_effort_for_provider("anthropic", &fable_config).unwrap();
     }
 }

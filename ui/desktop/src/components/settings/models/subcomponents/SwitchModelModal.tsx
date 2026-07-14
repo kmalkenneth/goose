@@ -25,6 +25,7 @@ import Model, {
   fetchModelReasoning,
   fetchModelsForProviders,
   getProviderMetadata,
+  getThinkingEffortLevels,
 } from '../modelInterface';
 import { getPredefinedModelsFromEnv, shouldShowPredefinedModels } from '../predefinedModelsUtils';
 import type { ProviderDetails, ProviderType, ThinkingEffort } from '../../../../types/providers';
@@ -33,7 +34,11 @@ import { trackModelChanged } from '../../../../utils/analytics';
 const i18n = defineMessages({
   thinkingEffortOff: {
     id: 'switchModelModal.thinkingEffortOff',
-    defaultMessage: 'Off - No extended thinking',
+    defaultMessage: 'Off - Provider default behavior',
+  },
+  claudeEffortOff: {
+    id: 'switchModelModal.claudeEffortOff',
+    defaultMessage: 'Off - Provider-managed adaptive thinking',
   },
   thinkingLevelLow: {
     id: 'switchModelModal.thinkingLevelLow',
@@ -58,6 +63,10 @@ const i18n = defineMessages({
   claudeEffortMax: {
     id: 'switchModelModal.claudeEffortMax',
     defaultMessage: 'Max - No constraints on thinking depth',
+  },
+  claudeEffortXHigh: {
+    id: 'switchModelModal.claudeEffortXHigh',
+    defaultMessage: 'XHigh - Extended thinking for complex tasks',
   },
   selectModel: {
     id: 'switchModelModal.selectModel',
@@ -247,14 +256,6 @@ export const SwitchModelModal = ({
 }: SwitchModelModalProps) => {
   const intl = useIntl();
 
-  const THINKING_EFFORT_OPTIONS: { value: ThinkingEffort; label: string }[] = [
-    { value: 'off', label: intl.formatMessage(i18n.thinkingEffortOff) },
-    { value: 'low', label: intl.formatMessage(i18n.claudeEffortLow) },
-    { value: 'medium', label: intl.formatMessage(i18n.claudeEffortMedium) },
-    { value: 'high', label: intl.formatMessage(i18n.claudeEffortHigh) },
-    { value: 'max', label: intl.formatMessage(i18n.claudeEffortMax) },
-  ];
-
   const {
     changeModel,
     currentModel: configModel,
@@ -299,7 +300,33 @@ export const SwitchModelModal = ({
   const [selectedModelReasoning, setSelectedModelReasoning] = useState<boolean | null>(null);
 
   const modelReasoning = selectedModelReasoning ?? selectedPredefinedModel?.reasoning;
-  const showThinkingControl = modelReasoning === true;
+  const selectedEffortProvider = selectedPredefinedModel?.provider ?? provider ?? '';
+  const selectedEffortModel = selectedPredefinedModel?.name ?? model;
+  const THINKING_EFFORT_LABELS: Record<ThinkingEffort, string> = {
+    off:
+      selectedEffortProvider === 'anthropic'
+        ? intl.formatMessage(i18n.claudeEffortOff)
+        : intl.formatMessage(i18n.thinkingEffortOff),
+    low: intl.formatMessage(i18n.claudeEffortLow),
+    medium: intl.formatMessage(i18n.claudeEffortMedium),
+    high: intl.formatMessage(i18n.claudeEffortHigh),
+    xhigh: intl.formatMessage(i18n.claudeEffortXHigh),
+    max: intl.formatMessage(i18n.claudeEffortMax),
+  };
+  const thinkingEffortLevels = getThinkingEffortLevels(
+    selectedEffortProvider,
+    selectedEffortModel,
+    modelReasoning
+  );
+  const thinkingEffortOptions =
+    thinkingEffortLevels?.map((value) => ({
+      value,
+      label: THINKING_EFFORT_LABELS[value],
+    })) ?? [];
+  const selectedThinkingEffort = thinkingEffortLevels?.includes(thinkingEffort ?? 'off')
+    ? (thinkingEffort ?? 'off')
+    : (thinkingEffortLevels?.[0] ?? 'off');
+  const showThinkingControl = thinkingEffortLevels !== null;
   const resolveSelectedModelReasoning = useCallback(
     (providerName: string, modelName: string, fallback?: boolean) => {
       const requestId = ++reasoningRequestId.current;
@@ -401,22 +428,25 @@ export const SwitchModelModal = ({
         reasoning: selectedModelReasoning ?? modelObj.reasoning,
       };
 
-      if (showThinkingControl) {
-        const effort = thinkingEffort ?? modelObj.request_params?.thinking_effort ?? 'off';
+      if (thinkingEffortLevels !== null && thinkingEffortLevels.length > 1) {
         modelObj = {
           ...modelObj,
-          request_params: { ...modelObj.request_params, thinking_effort: effort },
+          request_params: {
+            ...modelObj.request_params,
+            thinking_effort: selectedThinkingEffort,
+          },
         };
-        acpSaveThinkingEffort(effort).catch(console.warn);
       }
 
       const success = await changeModel(sessionId, modelObj);
       if (success) {
+        if (thinkingEffortLevels !== null && thinkingEffortLevels.length > 1) {
+          acpSaveThinkingEffort(selectedThinkingEffort).catch(console.warn);
+        }
         onModelSelected?.(modelObj.name, modelObj.provider || '');
         trackModelChanged(modelObj.provider || '', modelObj.name);
+        onClose();
       }
-
-      onClose();
     }
   };
 
@@ -703,12 +733,14 @@ export const SwitchModelModal = ({
 
   const thinkingEffortControl = showThinkingControl && (
     <div className="mt-2">
-      <label className="text-sm text-textSubtle mb-1 block">
+      <label htmlFor="thinking-effort" className="text-sm text-textSubtle mb-1 block">
         {intl.formatMessage(i18n.thinkingEffort)}
       </label>
       <Select
-        options={THINKING_EFFORT_OPTIONS}
-        value={THINKING_EFFORT_OPTIONS.find((o) => o.value === (thinkingEffort ?? 'off'))}
+        inputId="thinking-effort"
+        options={thinkingEffortOptions}
+        value={thinkingEffortOptions.find((option) => option.value === selectedThinkingEffort)}
+        isDisabled={thinkingEffortOptions.length <= 1}
         onChange={(newValue: unknown) => {
           const option = newValue as { value: ThinkingEffort; label: string } | null;
           setThinkingEffort(option?.value || 'off');

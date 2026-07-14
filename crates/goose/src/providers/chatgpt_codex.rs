@@ -60,19 +60,18 @@ pub const CHATGPT_CODEX_KNOWN_MODELS: &[ChatGptCodexModelAttrs] = &[
         name: "gpt-5.4",
         reasoning_levels: &["low", "medium", "high", "xhigh"],
     },
-    // GPT-5.6 models are registered as compatibility candidates only.
-    // Terra is the only model with a confirmed effort capability.
+    // GPT-5.6 models expose the complete six-state effort selector.
     ChatGptCodexModelAttrs {
         name: "gpt-5.6-luna",
-        reasoning_levels: &[],
+        reasoning_levels: &["low", "medium", "high", "xhigh", "max"],
     },
     ChatGptCodexModelAttrs {
         name: "gpt-5.6-terra",
-        reasoning_levels: &["high"],
+        reasoning_levels: &["low", "medium", "high", "xhigh", "max"],
     },
     ChatGptCodexModelAttrs {
         name: "gpt-5.6-sol",
-        reasoning_levels: &[],
+        reasoning_levels: &["low", "medium", "high", "xhigh", "max"],
     },
 ];
 
@@ -238,10 +237,11 @@ fn reasoning_effort_for_config(model_config: &ModelConfig) -> Option<String> {
             let valid_levels = reasoning_levels_for_model(&model_config.model_name);
             let preferred_levels: &[&str] = match effort {
                 ThinkingEffort::Off => return None,
-                ThinkingEffort::Low => &["low", "medium", "high", "xhigh"],
-                ThinkingEffort::Medium => &["medium", "high", "low", "xhigh"],
-                ThinkingEffort::High => &["high", "medium", "xhigh", "low"],
-                ThinkingEffort::Max => &["xhigh", "high", "medium", "low"],
+                ThinkingEffort::Low => &["low", "medium", "high", "xhigh", "max"],
+                ThinkingEffort::Medium => &["medium", "high", "low", "xhigh", "max"],
+                ThinkingEffort::High => &["high", "medium", "xhigh", "low", "max"],
+                ThinkingEffort::XHigh => &["xhigh", "high", "medium", "low", "max"],
+                ThinkingEffort::Max => &["max", "xhigh", "high", "medium", "low"],
             };
 
             preferred_levels
@@ -262,22 +262,11 @@ fn is_gpt56_model(model: &str) -> bool {
     matches!(model, "gpt-5.6-luna" | "gpt-5.6-terra" | "gpt-5.6-sol")
 }
 
-fn omits_gpt56_reasoning_effort(model: &str) -> bool {
-    matches!(model, "gpt-5.6-luna" | "gpt-5.6-sol")
-}
-
-pub fn normalize_model_config(model_config: &mut ModelConfig) {
-    if omits_gpt56_reasoning_effort(&model_config.model_name) {
-        if let Some(request_params) = model_config.request_params.as_mut() {
-            request_params.remove("thinking_effort");
-        }
-    }
-}
-
 pub fn gpt56_reasoning_levels(model: &str) -> Option<&'static [&'static str]> {
     match model {
-        "gpt-5.6-luna" | "gpt-5.6-sol" => Some(&[]),
-        "gpt-5.6-terra" => Some(&["high"]),
+        "gpt-5.6-luna" | "gpt-5.6-terra" | "gpt-5.6-sol" => {
+            Some(&["low", "medium", "high", "xhigh", "max"])
+        }
         _ => None,
     }
 }
@@ -286,10 +275,11 @@ fn validate_gpt56_reasoning_effort(model: &str, effort: Option<&str>) -> Result<
     if !is_gpt56_model(model) {
         return Ok(());
     }
-    match (model, effort) {
-        ("gpt-5.6-terra", Some("high")) => Ok(()),
-        (_, None) => Ok(()),
-        _ => Err(anyhow!("reasoning effort is not supported for model {model}")),
+    match effort {
+        Some("off" | "low" | "medium" | "high" | "xhigh" | "max") | None => Ok(()),
+        Some(other) => Err(anyhow!(
+            "reasoning effort '{other}' is not supported for model {model}"
+        )),
     }
 }
 
@@ -300,18 +290,13 @@ fn create_codex_request(
     tools: &[Tool],
 ) -> Result<Value> {
     let input_items = build_input_items(messages)?;
-    // Validate the user-selected level before normalization. For example, a
-    // Terra `low` request must not become `high` merely because `high` is the
-    // only registered capability.
     if let Some(configured_effort) = model_config
         .request_params
         .as_ref()
         .and_then(|params| params.get("thinking_effort"))
         .and_then(Value::as_str)
     {
-        if configured_effort != "off" && !omits_gpt56_reasoning_effort(&model_config.model_name) {
-            validate_gpt56_reasoning_effort(&model_config.model_name, Some(configured_effort))?;
-        }
+        validate_gpt56_reasoning_effort(&model_config.model_name, Some(configured_effort))?;
     }
     let reasoning_effort = reasoning_effort_for_config(model_config);
     validate_gpt56_reasoning_effort(&model_config.model_name, reasoning_effort.as_deref())?;
@@ -359,10 +344,16 @@ fn create_codex_request(
     if is_gpt56_model(&model_config.model_name) {
         payload_obj.insert("stream".to_string(), json!(true));
         payload_obj.insert("text".to_string(), json!({ "verbosity": "low" }));
-        payload_obj.insert("include".to_string(), json!(["reasoning.encrypted_content"]));
+        payload_obj.insert(
+            "include".to_string(),
+            json!(["reasoning.encrypted_content"]),
+        );
         payload_obj.insert("reasoning".to_string(), json!({ "summary": "auto" }));
         if let Some(effort) = reasoning_effort {
-            payload_obj.insert("reasoning".to_string(), json!({ "effort": effort, "summary": "auto" }));
+            payload_obj.insert(
+                "reasoning".to_string(),
+                json!({ "effort": effort, "summary": "auto" }),
+            );
         }
     }
 
@@ -383,7 +374,8 @@ fn required_account_id_header(
 ) -> Result<reqwest::header::HeaderValue, ProviderError> {
     let account_id = token_data.account_id.as_deref().ok_or_else(|| {
         ProviderError::Authentication(
-            "ChatGPT Codex account ID is unavailable; sign in again before sending a request".to_string(),
+            "ChatGPT Codex account ID is unavailable; sign in again before sending a request"
+                .to_string(),
         )
     })?;
     let account_id = account_id.trim();
@@ -1484,14 +1476,15 @@ mod tests {
     }
 
     #[test]
-    fn gpt56_models_are_registered_and_default_stays_gpt55() {
+    fn gpt56_models_expose_six_state_effort_capability() {
         assert_eq!(CHATGPT_CODEX_DEFAULT_MODEL, "gpt-5.5");
         for model in ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"] {
             assert!(known_model_names().contains(&model));
+            assert_eq!(
+                reasoning_levels_for_model(model),
+                &["low", "medium", "high", "xhigh", "max"]
+            );
         }
-        assert_eq!(reasoning_levels_for_model("gpt-5.6-terra"), &["high"]);
-        assert!(reasoning_levels_for_model("gpt-5.6-luna").is_empty());
-        assert!(reasoning_levels_for_model("gpt-5.6-sol").is_empty());
     }
 
     #[test]
@@ -1509,34 +1502,35 @@ mod tests {
     }
 
     #[test]
-    fn unsupported_gpt56_effort_fails_before_transport() {
-        let mut config = ModelConfig::new("gpt-5.6-terra");
-        config.request_params = Some([("thinking_effort".to_string(), json!("low"))].into());
-        let error = create_codex_request(&config, "sys", &[], &[]).unwrap_err();
-        assert!(error.to_string().contains("not supported"));
+    fn gpt56_effort_levels_are_preserved_before_transport() {
+        for model in ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"] {
+            for effort in ["low", "medium", "high", "xhigh", "max"] {
+                let mut config = ModelConfig::new(model);
+                config.request_params =
+                    Some([("thinking_effort".to_string(), json!(effort))].into());
+                let payload = create_codex_request(&config, "sys", &[], &[]).unwrap();
+                assert_eq!(payload["reasoning"]["effort"], effort);
+            }
+        }
     }
 
     #[test]
     fn default_gpt56_requests_do_not_invent_an_effort() {
         for model in ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol"] {
-            let payload = create_codex_request(&ModelConfig::new(model), "sys", &[], &[])
-                .unwrap();
+            let payload = create_codex_request(&ModelConfig::new(model), "sys", &[], &[]).unwrap();
             assert!(payload["reasoning"].get("effort").is_none());
             assert_eq!(payload["reasoning"]["summary"], "auto");
         }
     }
 
     #[test]
-    fn luna_and_sol_ignore_inherited_effort() {
+    fn luna_and_sol_preserve_explicit_effort() {
         use goose_providers::thinking::ThinkingEffort;
 
         for model in ["gpt-5.6-luna", "gpt-5.6-sol"] {
-            let mut config = ModelConfig::new(model).with_thinking_effort(ThinkingEffort::High);
-            normalize_model_config(&mut config);
-            assert!(config.thinking_effort().is_none());
-
+            let config = ModelConfig::new(model).with_thinking_effort(ThinkingEffort::High);
             let payload = create_codex_request(&config, "sys", &[], &[]).unwrap();
-            assert!(payload["reasoning"].get("effort").is_none());
+            assert_eq!(payload["reasoning"]["effort"], "high");
         }
     }
 

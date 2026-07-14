@@ -280,6 +280,7 @@ pub enum ThinkingEffort {
     Low,
     Medium,
     High,
+    XHigh,
     Max,
 }
 
@@ -291,7 +292,8 @@ impl FromStr for ThinkingEffort {
             "low" => Ok(Self::Low),
             "medium" | "med" => Ok(Self::Medium),
             "high" => Ok(Self::High),
-            "max" | "xhigh" => Ok(Self::Max),
+            "xhigh" => Ok(Self::XHigh),
+            "max" => Ok(Self::Max),
             other => Err(format!("unknown thinking effort: '{other}'")),
         }
     }
@@ -304,6 +306,7 @@ impl fmt::Display for ThinkingEffort {
             Self::Low => write!(f, "low"),
             Self::Medium => write!(f, "medium"),
             Self::High => write!(f, "high"),
+            Self::XHigh => write!(f, "xhigh"),
             Self::Max => write!(f, "max"),
         }
     }

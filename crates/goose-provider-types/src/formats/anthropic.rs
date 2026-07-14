@@ -624,6 +624,7 @@ pub fn thinking_budget_tokens(model_config: &ModelConfig) -> i32 {
         ThinkingEffort::Low => 4000,
         ThinkingEffort::Medium => 10000,
         ThinkingEffort::High => 16000,
+        ThinkingEffort::XHigh => 32000,
         ThinkingEffort::Max => 32000,
     }
 }
@@ -645,8 +646,13 @@ fn apply_thinking_config(
     match thinking_type_for_provider(provider_name, model_config) {
         ThinkingType::Adaptive => {
             obj.insert("thinking".to_string(), json!({"type": "adaptive"}));
-            let effort = adaptive_output_effort(model_config).to_string();
-            obj.insert("output_config".to_string(), json!({"effort": effort}));
+            if model_config
+                .thinking_effort()
+                .is_some_and(|effort| effort != ThinkingEffort::Off)
+            {
+                let effort = adaptive_output_effort(model_config).to_string();
+                obj.insert("output_config".to_string(), json!({"effort": effort}));
+            }
         }
         ThinkingType::Enabled => {
             let budget_tokens = thinking_budget_tokens(model_config)
@@ -1809,7 +1815,32 @@ mod tests {
 
         assert_eq!(payload["thinking"]["type"], "adaptive");
         assert!(payload.get("temperature").is_none());
-        assert_eq!(payload["output_config"]["effort"], "high");
+        assert!(payload.get("output_config").is_none());
+
+        Ok(())
+    }
+    #[test]
+    fn test_fable_5_explicit_off_uses_provider_default_adaptive_effort() -> Result<()> {
+        let config = cfg_with_effort("claude-fable-5", "off");
+        let messages = vec![Message::user().with_text("Hello")];
+
+        let payload = create_request_with_default_options(&config, "system", &messages, &[])?;
+
+        assert_eq!(payload["thinking"]["type"], "adaptive");
+        assert!(payload.get("output_config").is_none());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_fable_5_preserves_xhigh_and_max_effort() -> Result<()> {
+        let messages = vec![Message::user().with_text("Hello")];
+
+        for effort in ["xhigh", "max"] {
+            let config = cfg_with_effort("claude-fable-5", effort);
+            let payload = create_request_with_default_options(&config, "system", &messages, &[])?;
+            assert_eq!(payload["output_config"]["effort"], effort);
+        }
 
         Ok(())
     }

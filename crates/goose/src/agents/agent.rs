@@ -2854,6 +2854,7 @@ impl Agent {
             Config::global(),
         );
 
+        crate::model_config::validate_thinking_effort_for_provider(provider_name, &model_config)?;
         let provider = crate::providers::create_with_working_dir(
             provider_name,
             extensions,
